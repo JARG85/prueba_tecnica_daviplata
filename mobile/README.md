@@ -1,97 +1,96 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+# Prueba Técnica DaviPlata (Mobile)
 
-# Getting Started
+Este repositorio contiene el cliente móvil híbrido para la prueba técnica de DaviPlata. El proyecto combina una interfaz moderna en **React Native (v0.86.0)** con una arquitectura nativa en **Android (Kotlin)**, conectándose con una API de backend en Ruby on Rails.
 
-> **Note**: Make sure you have completed the [Set Up Your Environment](https://reactnative.dev/docs/set-up-your-environment) guide before proceeding.
+---
 
-## Step 1: Start Metro
+## 📱 Características del Proyecto
 
-First, you will need to run **Metro**, the JavaScript build tool for React Native.
+* **Diseño Premium y Consistente:** Cabeceras con gradientes mesh orgánicos en rojo institucional, tarjetas blancas solapadas, entradas de texto tipo píldora (pills) con iconos vectoriales minimalistas hechos con hojas de estilo nativas y badges dinámicos.
+* **Separación de Responsabilidades:** Cada bundle del aplicativo móvil está aislado en su propia subcarpeta dentro de `src/bundles/`, dividiendo la lógica de pintado y estado de la hoja de estilos (`*.styles.ts`).
+* **Puente Nativo Robusto (Native Bridge):** Comunicación bidireccional entre la capa JavaScript y Kotlin utilizando `DaviPlataBridge` para transacciones, cierres de pantalla nativos en el hilo de interfaz (`runOnUiThread`) y sincronizaciones automáticas.
+* **Estilos Centralizados:** Gestión de tokens de diseño, colores institucionales y espaciados de seguridad unificados en `src/styles/theme.ts` y layouts comunes en `src/styles/commonStyles.ts`.
+* **Pruebas Unitarias Automatizadas:** Cobertura de tests unitarios robustos con mocks para todas las pantallas del aplicativo.
 
-To start the Metro dev server, run the following command from the root of your React Native project:
+---
 
-```sh
-# Using npm
+## 🛠️ Arquitectura de Directorios Móbiles
+
+```text
+mobile/
+├── index.js                      # Registro central de los bundles de React Native
+├── jest.config.js                # Configuración de Jest con presets nativos
+├── __tests__/                    # Pruebas unitarias del frontend
+│   ├── App.test.tsx
+│   ├── LoginBundle.test.tsx
+│   ├── HomeBundle.test.tsx
+│   ├── TransferenciaBundle.test.tsx
+│   └── MovimientosBundle.test.tsx
+└── src/
+    ├── assets/                   # Recursos estáticos (Logos e imágenes corporativas)
+    ├── services/
+    │   └── bridge.ts             # Interfaz TypeScript del puente nativo de Kotlin
+    ├── styles/
+    │   ├── theme.ts              # Paleta de colores y tokens de espaciado
+    │   └── commonStyles.ts       # Hojas de estilo y layouts compartidos
+    └── bundles/                  # Componentes aislados de vistas del negocio
+        ├── Login/                # Ingreso de credenciales y redirecciones
+        ├── Home/                 # Saldos consolidados, accesos directos y navegación
+        ├── Transferencia/        # Formulario de Pasar Plata, validaciones e iconos píldora
+        └── Movimientos/          # Historial de transacciones con indicadores gráficos
+```
+
+---
+
+## 🚀 Guía de Inicio Rápido
+
+### Requisitos Previos
+* **Node.js** (versión recomendada `>= 22.11.0`)
+* **Android SDK** y un emulador configurado o dispositivo físico conectado mediante ADB.
+* El servidor de Backend (Rails API) debe estar corriendo y accesible desde la red del emulador.
+
+### Paso 1: Instalación de dependencias
+Instala los paquetes de Node y dependencias de desarrollo (incluyendo configuraciones de pruebas):
+```bash
+npm install
+```
+
+### Paso 2: Iniciar Metro Bundler
+Inicia el empaquetador de JavaScript de React Native:
+```bash
 npm start
-
-# OR using Yarn
-yarn start
 ```
 
-## Step 2: Build and run your app
-
-With Metro running, open a new terminal window/pane from the root of your React Native project, and use one of the following commands to build and run your Android or iOS app:
-
-### Android
-
-```sh
-# Using npm
+### Paso 3: Compilar y ejecutar en Android
+Con el Metro Bundler corriendo en una ventana de comandos, abre otra terminal en la raíz del proyecto móvil y ejecuta:
+```bash
 npm run android
-
-# OR using Yarn
-yarn android
 ```
 
-### iOS
+---
 
-For iOS, remember to install CocoaPods dependencies (this only needs to be run on first clone or after updating native deps).
+## 🧪 Pruebas Automatizadas
 
-The first time you create a new project, run the Ruby bundler to install CocoaPods itself:
+El proyecto incluye un conjunto de pruebas unitarias implementadas con **Jest** y **React Test Renderer**. Estas simulan el puente nativo para evaluar de forma aislada la interfaz y las actualizaciones de estado asíncronas de las vistas.
 
-```sh
-bundle install
+Para ejecutar la suite de pruebas unitarias, ejecuta:
+```bash
+npm test
 ```
 
-Then, and every time you update your native dependencies, run:
+### Detalle de las Pruebas:
+* `LoginBundle.test.tsx`: Evalúa la existencia y configuración de placeholders para los inputs de celular y clave e ingresa correctamente la UI.
+* `HomeBundle.test.tsx`: Verifica que el saludo de usuario, formato de teléfono e importe en pesos colombianos (`$75.000,00`) rendericen según la estática.
+* `TransferenciaBundle.test.tsx`: Evalúa que el saldo de cuenta actual se pre-cargue en la cabecera de Pasar Plata y los campos se configuren.
+* `MovimientosBundle.test.tsx`: Mapea egresos (debitos) e ingresos (creditos) simulados y verifica que la FlatList renderice con sus correspondientes prefijos (`+` / `-`) y formatos de divisa.
 
-```sh
-bundle exec pod install
-```
+---
 
-For more information, please visit [CocoaPods Getting Started guide](https://guides.cocoapods.org/using/getting-started.html).
+## 💡 Detalles Técnicos y Buenas Prácticas Aplicadas
 
-```sh
-# Using npm
-npm run ios
-
-# OR using Yarn
-yarn ios
-```
-
-If everything is set up correctly, you should see your new app running in the Android Emulator, iOS Simulator, or your connected device.
-
-This is one way to run your app — you can also build it directly from Android Studio or Xcode.
-
-## Step 3: Modify your app
-
-Now that you have successfully run the app, let's make changes!
-
-Open `App.tsx` in your text editor of choice and make some changes. When you save, your app will automatically update and reflect these changes — this is powered by [Fast Refresh](https://reactnative.dev/docs/fast-refresh).
-
-When you want to forcefully reload, for example to reset the state of your app, you can perform a full reload:
-
-- **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Dev Menu**, accessed via <kbd>Ctrl</kbd> + <kbd>M</kbd> (Windows/Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (macOS).
-- **iOS**: Press <kbd>R</kbd> in iOS Simulator.
-
-## Congratulations! :tada:
-
-You've successfully run and modified your React Native App. :partying_face:
-
-### Now what?
-
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [docs](https://reactnative.dev/docs/getting-started).
-
-# Troubleshooting
-
-If you're having issues getting the above steps to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
-
-# Learn More
-
-To learn more about React Native, take a look at the following resources:
-
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
+* **Sincronización de Saldo (Lifecycle Resumes):**
+  Al retornar al panel principal, el método `onResume()` en Kotlin vuelve a consultar los saldos asíncronamente en el servidor de Rails y los envía de regreso a JavaScript, manteniendo el saldo sincronizado inmediatamente.
+* **Formateo de Moneda Local:**
+  Implementación limpia de formateo numérico personalizada por expresiones regulares, garantizando que el formato de pesos colombianos (`$1.450.000,00`) se pinte correctamente en cualquier versión de motor JS (Hermes/JSC).
+* **Robustez en Hilos Nativos:**
+  Todas las acciones que afectan las vistas de Android (`activity.finish()`) son despachadas mediante `activity.runOnUiThread { ... }` para prevenir excepciones y cierres de pantalla nativos.
