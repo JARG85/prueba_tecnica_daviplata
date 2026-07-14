@@ -10,29 +10,33 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_07_13_170524) do
+ActiveRecord::Schema[8.1].define(version: 2026_07_13_195208) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
   create_table "movements", force: :cascade do |t|
-    t.decimal "amount"
+    t.decimal "amount", precision: 15, scale: 2, null: false
     t.datetime "created_at", null: false
-    t.string "description"
-    t.string "movement_type"
-    t.string "status"
+    t.string "description", null: false
+    t.string "movement_type", null: false
+    t.string "status", default: "EXITOSO", null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
     t.index ["user_id"], name: "index_movements_on_user_id"
   end
 
   create_table "users", force: :cascade do |t|
-    t.decimal "balance"
+    t.decimal "balance", precision: 15, scale: 2, default: "0.0", null: false
     t.datetime "created_at", null: false
-    t.string "name"
-    t.string "password_digest"
-    t.string "phone"
-    t.string "status"
+    t.string "name", null: false
+    t.string "password_digest", null: false
+    t.string "phone", null: false
+    t.datetime "session_expires_at"
+    t.string "session_token"
+    t.string "status", default: "ACTIVO", null: false
     t.datetime "updated_at", null: false
+    t.index ["phone"], name: "index_users_on_phone", unique: true
+    t.index ["session_token"], name: "index_users_on_session_token", unique: true
   end
 
   add_foreign_key "movements", "users"

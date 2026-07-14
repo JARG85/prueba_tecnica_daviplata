@@ -1,8 +1,8 @@
 class Api::V1::AccountsController < ApplicationController
+  before_action :authenticate_user!
+
   def balance
-    user = User.find(params[:user_id]) # Pasado por el Header o Parámetro desde Android
-    render json: { balance: user.balance }, status: :ok
-  rescue ActiveRecord::RecordNotFound
-    render json: { error: 'Usuario no encontrado' }, status: :not_found
+    # El current_user ya está autenticado e identificado
+    render json: { balance: current_user.balance.to_f }, status: :ok
   end
 end

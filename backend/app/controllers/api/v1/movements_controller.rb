@@ -1,8 +1,9 @@
 class Api::V1::MovementsController < ApplicationController
+  before_action :authenticate_user!
+
   def index
-    user = User.find(params[:user_id])
-    # Muestra solo movimientos del usuario autenticado
-    movements = user.movements.order(created_at: :desc)
+    # Retorna únicamente los movimientos del usuario autenticado
+    movements = current_user.movements.order(created_at: :desc)
 
     render json: movements.map { |m|
       {
@@ -13,7 +14,5 @@ class Api::V1::MovementsController < ApplicationController
         estado: m.status
       }
     }, status: :ok
-  rescue ActiveRecord::RecordNotFound
-    render json: { error: 'Usuario no encontrado' }, status: :not_found
   end
 end
