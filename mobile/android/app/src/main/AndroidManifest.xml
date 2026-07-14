@@ -11,17 +11,58 @@
       android:theme="@style/AppTheme"
       android:usesCleartextTraffic="${usesCleartextTraffic}"
       android:supportsRtl="true">
+
+      <!-- SplashActivity: Lanzador de la aplicación -->
       <activity
-        android:name=".MainActivity"
-        android:label="@string/app_name"
-        android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|screenSize|smallestScreenSize|uiMode"
-        android:launchMode="singleTask"
-        android:windowSoftInputMode="adjustResize"
+        android:name=".SplashActivity"
+        android:theme="@style/AppTheme"
         android:exported="true">
         <intent-filter>
             <action android:name="android.intent.action.MAIN" />
             <category android:name="android.intent.category.LAUNCHER" />
         </intent-filter>
       </activity>
+
+      <!-- LoginActivity: Aloja LoginBundle -->
+      <activity
+        android:name=".LoginActivity"
+        android:label="@string/app_name"
+        android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|screenSize|smallestScreenSize|uiMode"
+        android:windowSoftInputMode="adjustResize"
+        android:exported="false" />
+
+      <!-- HomeActivity: Aloja HomeBundle -->
+      <activity
+        android:name=".HomeActivity"
+        android:label="@string/app_name"
+        android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|screenSize|smallestScreenSize|uiMode"
+        android:windowSoftInputMode="adjustResize"
+        android:exported="false" />
+
+      <!-- TransferenciaActivity: Aloja TransferenciaBundle -->
+      <activity
+        android:name=".TransferenciaActivity"
+        android:label="@string/app_name"
+        android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|screenSize|smallestScreenSize|uiMode"
+        android:windowSoftInputMode="adjustResize"
+        android:exported="false" />
+
+      <!-- MovimientosActivity: Aloja MovimientosBundle -->
+      <activity
+        android:name=".MovimientosActivity"
+        android:label="@string/app_name"
+        android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|screenSize|smallestScreenSize|uiMode"
+        android:windowSoftInputMode="adjustResize"
+        android:exported="false" />
+
+      <!-- MainActivity (Opcional, mantenido por compatibilidad) -->
+      <activity
+        android:name=".MainActivity"
+        android:label="@string/app_name"
+        android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|screenSize|smallestScreenSize|uiMode"
+        android:launchMode="singleTask"
+        android:windowSoftInputMode="adjustResize"
+        android:exported="false" />
+
     </application>
 </manifest>
