@@ -61,7 +61,7 @@ export default function HomeBundle(props: HomeBundleProps) {
     const parts = fullName.split(' ');
     const commonCompoundPrefixes = ['carlos', 'juan', 'maria', 'ana', 'jose', 'luis', 'pedro', 'jorge'];
     if (parts.length >= 2 && commonCompoundPrefixes.includes(parts[0].toLowerCase())) {
-      return `${parts[0]}\n${parts[1]}`;
+      return `${parts[0]} ${parts[1]}`;
     }
     return parts[0];
   };
@@ -131,9 +131,8 @@ export default function HomeBundle(props: HomeBundleProps) {
           <View style={styles.headerContentRow}>
             {/* Left Column: Welcome Greeting */}
             <View style={styles.headerWelcomeCol}>
-              <Text style={styles.welcomeTextLabel}>¡Hola,</Text>
-              <Text style={styles.welcomeTextName}>{getFirstName(userData.name)}!</Text>
-              <Text style={styles.phoneText}>Datos de contacto: +57 {userData.phone}</Text>
+              <Text style={styles.welcomeTextName}>¡Hola, {getFirstName(userData.name)}!</Text>
+              <Text style={styles.phoneText}>+57 {userData.phone}</Text>
             </View>
 
             {/* Right Column: Corporate Logo in rounded container */}
