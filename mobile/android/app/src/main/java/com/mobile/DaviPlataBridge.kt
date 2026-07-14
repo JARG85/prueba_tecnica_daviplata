@@ -220,7 +220,9 @@ class DaviPlataBridge(private val reactContext: ReactApplicationContext) : React
     @ReactMethod
     fun closeActivity() {
         val activity = reactContext.currentActivity ?: return
-        activity.finish()
+        activity.runOnUiThread {
+            activity.finish()
+        }
     }
 
     @ReactMethod
