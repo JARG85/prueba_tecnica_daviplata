@@ -69,23 +69,14 @@ test:
 #
 # If the connection URL is provided in the special DATABASE_URL environment
 # variable, Rails will automatically merge its configuration values on top of
-# the values provided in this file. Alternatively, you can specify a connection
-# URL environment variable explicitly:
-#
-#   production:
-#     url: <%= ENV["MY_APP_DATABASE_URL"] %>
-#
-# Connection URLs for non-primary databases can also be configured using
-# environment variables. The variable name is formed by concatenating the
-# connection name with `_DATABASE_URL`. For example:
-#
-#   CACHE_DATABASE_URL="postgres://cacheuser:cachepass@localhost/cachedatabase"
-#
-# Read https://guides.rubyonrails.org/configuring.html#configuring-a-database
-# for a full overview on how database connection configuration can be specified.
-#
+# the values provided in this file.
+
 production:
-  adapter: postgresql
-  encoding: unicode
-  url: <%= ENV['DATABASE_URL'] %>
-  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  primary:
+    <<: *default
+    url: <%= ENV["DATABASE_URL"] || ENV["DATABASE_PRIVATE_URL"] %>
+    host: <%= ENV["PGHOST"] || ENV["POSTGRES_HOST"] %>
+    port: <%= ENV["PGPORT"] || ENV["POSTGRES_PORT"] || 5432 %>
+    database: <%= ENV["PGDATABASE"] || ENV["POSTGRES_DB"] || ENV["POSTGRES_DATABASE"] %>
+    username: <%= ENV["PGUSER"] || ENV["POSTGRES_USER"] %>
+    password: <%= ENV["PGPASSWORD"] || ENV["POSTGRES_PASSWORD"] %>
