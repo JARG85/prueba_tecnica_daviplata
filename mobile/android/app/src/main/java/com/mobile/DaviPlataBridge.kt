@@ -226,6 +226,16 @@ class DaviPlataBridge(private val reactContext: ReactApplicationContext) : React
     }
 
     @ReactMethod
+    fun getBalance(promise: Promise) {
+        val activity = reactContext.currentActivity
+        if (activity != null) {
+            promise.resolve(DataManager.getBalance(activity))
+        } else {
+            promise.resolve(100000.0)
+        }
+    }
+
+    @ReactMethod
     fun sendLogout() {
         Log.d(TAG, "sendLogout called")
         val activity = reactContext.currentActivity ?: return

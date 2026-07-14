@@ -43,6 +43,17 @@ class NativeBridgeService {
   }
 
   /**
+   * Fetches the current stored balance from the native layer.
+   */
+  async getBalance(): Promise<number> {
+    if (DaviPlataBridge && DaviPlataBridge.getBalance) {
+      return await DaviPlataBridge.getBalance();
+    } else {
+      return 100000;
+    }
+  }
+
+  /**
    * Performs transfer on the Rails backend via the native host layer.
    */
   async sendTransfer(destinationPhone: string, amount: number, description: string): Promise<string> {

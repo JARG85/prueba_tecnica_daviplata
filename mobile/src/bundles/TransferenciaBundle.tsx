@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   StyleSheet,
   Text,
@@ -21,7 +21,19 @@ interface TransferenciaBundleProps {
 
 export default function TransferenciaBundle(props: TransferenciaBundleProps) {
   const currentPhone = props.currentPhone || '3001234567';
-  const balance = props.balance !== undefined ? props.balance : 100000;
+  const [balance, setBalance] = useState(props.balance !== undefined ? props.balance : 100000);
+
+  useEffect(() => {
+    const fetchBalance = async () => {
+      try {
+        const currentBalance = await NativeBridge.getBalance();
+        setBalance(currentBalance);
+      } catch (e) {
+        console.error('Error fetching balance in TransferenciaBundle:', e);
+      }
+    };
+    fetchBalance();
+  }, []);
 
   const [destinationPhone, setDestinationPhone] = useState('');
   const [amountStr, setAmountStr] = useState('');
