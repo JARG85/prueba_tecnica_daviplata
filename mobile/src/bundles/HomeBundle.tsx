@@ -11,6 +11,8 @@ import {
   Image,
 } from 'react-native';
 import { NativeBridge } from '../services/bridge';
+import { COLORS } from '../styles/theme';
+import { commonStyles } from '../styles/commonStyles';
 
 interface HomeBundleProps {
   name?: string;
@@ -129,27 +131,37 @@ export default function HomeBundle(props: HomeBundleProps) {
   );
 
   return (
-    <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor="#C8102E" />
+    <SafeAreaView style={commonStyles.container}>
+      <StatusBar barStyle="light-content" backgroundColor={COLORS.primary} />
+
+      {/* Top Logo Header (White Bar) */}
+      <View style={styles.topLogoHeader}>
+        <Image
+          source={require('../assets/images/logo_davivienda.png')}
+          style={styles.topLogoImage}
+          resizeMode="contain"
+        />
+      </View>
 
       <ScrollView
-        contentContainerStyle={styles.scrollContainer}
+        contentContainerStyle={commonStyles.scrollContainer}
         showsVerticalScrollIndicator={false}
       >
-        {/* Red Banner with Gradient Overlays (Extends to top of screen) */}
-        <View style={styles.headerSection}>
-          <View style={styles.gradientOverlay1} />
-          <View style={styles.gradientOverlay2} />
-          <View style={styles.gradientOverlay3} />
+        {/* Red Banner with Gradient Overlays */}
+        <View style={[commonStyles.headerSection, styles.headerSection]}>
+          <View style={commonStyles.gradientOverlay1} />
+          <View style={commonStyles.gradientOverlay2} />
+          <View style={commonStyles.gradientOverlay3} />
 
           <View style={styles.headerContentRow}>
             {/* Left Column: Welcome Greeting */}
             <View style={styles.headerWelcomeCol}>
-              <Text style={styles.welcomeTextName}>¡Hola, {getFirstName(userData.name)}!</Text>
+              <Text style={styles.welcomeTextLabel}>¡Hola,</Text>
+              <Text style={styles.welcomeTextName}>{getFirstName(userData.name)}!</Text>
               <Text style={styles.phoneText}>+57 {userData.phone}</Text>
             </View>
 
-            {/* Right Column: Corporate Logo in rounded container */}
+            {/* Right Column: Corporate Logo */}
             <View style={styles.logoCol}>
               <View style={styles.logoRoundedBadge}>
                 <Image
@@ -163,7 +175,7 @@ export default function HomeBundle(props: HomeBundleProps) {
         </View>
 
         {/* Available Balance Card */}
-        <View style={styles.balanceCard}>
+        <View style={[commonStyles.card, styles.balanceCard]}>
           <Text style={styles.balanceLabel}>Tu Saldo Disponible:</Text>
           <Text style={styles.balanceValue}>{formatCurrency(userData.balance)}</Text>
           <Text style={styles.balanceCurrency}>Pesos Colombianos</Text>
@@ -223,53 +235,22 @@ export default function HomeBundle(props: HomeBundleProps) {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#F3F4F6',
+  topLogoHeader: {
+    height: 60,
+    backgroundColor: COLORS.cardBg,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderBottomWidth: 1,
+    borderBottomColor: COLORS.border,
+    paddingTop: Platform.OS === 'ios' ? 10 : 0,
   },
-  scrollContainer: {
-    flexGrow: 1,
-    paddingBottom: 100,
+  topLogoImage: {
+    width: 140,
+    height: 32,
   },
   headerSection: {
-    backgroundColor: '#C8102E', // Davivienda red base
-    paddingTop: Platform.OS === 'android' ? (StatusBar.currentHeight ? StatusBar.currentHeight + 60 : 85) : 80,
-    paddingHorizontal: 20,
+    paddingTop: Platform.OS === 'android' ? (StatusBar.currentHeight ? StatusBar.currentHeight + 40 : 65) : 60,
     paddingBottom: 70,
-    position: 'relative',
-    overflow: 'hidden',
-    borderBottomLeftRadius: 28,
-    borderBottomRightRadius: 28,
-  },
-  gradientOverlay1: {
-    position: 'absolute',
-    top: -80,
-    right: -60,
-    width: 200,
-    height: 200,
-    borderRadius: 100,
-    backgroundColor: '#E53E3E',
-    opacity: 0.25,
-  },
-  gradientOverlay2: {
-    position: 'absolute',
-    bottom: -100,
-    left: -80,
-    width: 240,
-    height: 240,
-    borderRadius: 120,
-    backgroundColor: '#7A091A',
-    opacity: 0.45,
-  },
-  gradientOverlay3: {
-    position: 'absolute',
-    bottom: -10,
-    right: -20,
-    width: 120,
-    height: 120,
-    borderRadius: 60,
-    backgroundColor: '#9B0F23',
-    opacity: 0.4,
   },
   headerContentRow: {
     flexDirection: 'row',
@@ -284,13 +265,13 @@ const styles = StyleSheet.create({
   welcomeTextLabel: {
     fontSize: 26,
     fontWeight: '800',
-    color: '#FFFFFF',
+    color: COLORS.textWhite,
     lineHeight: 30,
   },
   welcomeTextName: {
     fontSize: 26,
     fontWeight: '800',
-    color: '#FFFFFF',
+    color: COLORS.textWhite,
     lineHeight: 30,
     marginBottom: 6,
   },
@@ -308,11 +289,11 @@ const styles = StyleSheet.create({
     width: 82,
     height: 56,
     borderRadius: 14,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: COLORS.cardBg,
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 1.5,
-    borderColor: '#FFFFFF',
+    borderColor: COLORS.cardBg,
     overflow: 'hidden',
     ...Platform.select({
       ios: {
@@ -331,36 +312,25 @@ const styles = StyleSheet.create({
     height: 40,
   },
   balanceCard: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 24,
-    marginHorizontal: 16,
-    marginTop: -25, // Overlaps the red banner
-    paddingVertical: 24,
-    paddingHorizontal: 20,
+    marginTop: -25, // Specifically override marginTop to overlap the red header nicely
     alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.06,
-    shadowRadius: 12,
-    elevation: 4,
-    zIndex: 20,
   },
   balanceLabel: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#718096',
+    color: COLORS.textLight,
     marginBottom: 6,
   },
   balanceValue: {
     fontSize: 32,
     fontWeight: '900',
-    color: '#4A0E17',
+    color: COLORS.valueBurgundy,
     textAlign: 'center',
     marginBottom: 6,
   },
   balanceCurrency: {
     fontSize: 13,
-    color: '#A0AEC0',
+    color: COLORS.textMuted,
     fontWeight: '500',
   },
   menuGrid: {
@@ -371,7 +341,7 @@ const styles = StyleSheet.create({
   },
   gridButton: {
     flex: 0.485,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: COLORS.cardBg,
     borderRadius: 24,
     paddingVertical: 22,
     alignItems: 'center',
@@ -392,7 +362,7 @@ const styles = StyleSheet.create({
     marginBottom: -4,
   },
   arrowText: {
-    color: '#C8102E',
+    color: COLORS.primary,
     fontSize: 26,
     fontWeight: 'bold',
   },
@@ -401,17 +371,17 @@ const styles = StyleSheet.create({
     height: 22,
     borderRadius: 4,
     borderWidth: 2,
-    borderColor: '#C8102E',
+    borderColor: COLORS.primary,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#FFFFFF',
+    backgroundColor: COLORS.cardBg,
   },
   billCircle: {
     width: 8,
     height: 8,
     borderRadius: 4,
     borderWidth: 1.8,
-    borderColor: '#C8102E',
+    borderColor: COLORS.primary,
   },
   historyRow: {
     position: 'relative',
@@ -425,14 +395,14 @@ const styles = StyleSheet.create({
     height: 32,
     borderRadius: 4,
     borderWidth: 2,
-    borderColor: '#C8102E',
+    borderColor: COLORS.primary,
     padding: 4,
     justifyContent: 'space-between',
-    backgroundColor: '#FFFFFF',
+    backgroundColor: COLORS.cardBg,
   },
   docLine: {
     height: 2,
-    backgroundColor: '#C8102E',
+    backgroundColor: COLORS.primary,
     borderRadius: 1,
   },
   smallClock: {
@@ -443,8 +413,8 @@ const styles = StyleSheet.create({
     height: 16,
     borderRadius: 8,
     borderWidth: 2,
-    borderColor: '#C8102E',
-    backgroundColor: '#FFFFFF',
+    borderColor: COLORS.primary,
+    backgroundColor: COLORS.cardBg,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -453,29 +423,29 @@ const styles = StyleSheet.create({
     height: 4,
     borderLeftWidth: 1.5,
     borderBottomWidth: 1.5,
-    borderColor: '#C8102E',
+    borderColor: COLORS.primary,
     transform: [{ rotate: '45deg' }],
   },
   gridButtonText: {
     fontSize: 14,
     fontWeight: 'bold',
-    color: '#4A0E17',
+    color: COLORS.valueBurgundy,
     lineHeight: 18,
     textAlign: 'center',
   },
   logoutContainer: {
     alignSelf: 'center',
-    marginTop: 44, // Pushed further down
+    marginTop: 44,
     marginBottom: 10,
     paddingVertical: 10,
     paddingHorizontal: 28,
     borderWidth: 1.5,
-    borderColor: '#C8102E',
+    borderColor: COLORS.primary,
     borderRadius: 22,
     backgroundColor: 'transparent',
   },
   logoutText: {
-    color: '#C8102E',
+    color: COLORS.primary,
     fontSize: 14,
     fontWeight: '700',
     textTransform: 'uppercase',
@@ -487,9 +457,9 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     height: 60,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: COLORS.cardBg,
     borderTopWidth: 1,
-    borderTopColor: '#E2E8F0',
+    borderTopColor: COLORS.border,
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignItems: 'center',
@@ -515,12 +485,12 @@ const styles = StyleSheet.create({
     borderBottomWidth: 8,
     borderLeftColor: 'transparent',
     borderRightColor: 'transparent',
-    borderBottomColor: '#C8102E',
+    borderBottomColor: COLORS.primary,
   },
   tabIconHomeBody: {
     width: 16,
     height: 10,
-    backgroundColor: '#C8102E',
+    backgroundColor: COLORS.primary,
     position: 'relative',
     marginTop: -1,
   },
@@ -536,7 +506,7 @@ const styles = StyleSheet.create({
     height: 8,
     borderRadius: 4,
     borderWidth: 1.5,
-    borderColor: '#718096',
+    borderColor: COLORS.textLight,
     borderBottomWidth: 0,
     marginBottom: -1,
   },
@@ -544,19 +514,19 @@ const styles = StyleSheet.create({
     width: 14,
     height: 9,
     borderRadius: 1.5,
-    backgroundColor: '#718096',
+    backgroundColor: COLORS.textLight,
   },
   tabIconHelp: {
     width: 20,
     height: 20,
     borderRadius: 10,
     borderWidth: 1.5,
-    borderColor: '#718096',
+    borderColor: COLORS.textLight,
     justifyContent: 'center',
     alignItems: 'center',
   },
   tabIconHelpText: {
-    color: '#718096',
+    color: COLORS.textLight,
     fontSize: 11,
     fontWeight: 'bold',
     lineHeight: 12,
@@ -564,13 +534,13 @@ const styles = StyleSheet.create({
   },
   tabTextActive: {
     fontSize: 10,
-    color: '#C8102E',
+    color: COLORS.primary,
     fontWeight: '700',
     marginTop: 3,
   },
   tabText: {
     fontSize: 10,
-    color: '#718096',
+    color: COLORS.textLight,
     fontWeight: '600',
     marginTop: 3,
   },

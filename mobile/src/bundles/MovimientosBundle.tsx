@@ -11,6 +11,8 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import { NativeBridge } from '../services/bridge';
+import { COLORS } from '../styles/theme';
+import { commonStyles } from '../styles/commonStyles';
 
 export interface Movement {
   id: string;
@@ -104,33 +106,33 @@ export default function MovimientosBundle() {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor="#C8102E" />
+    <SafeAreaView style={commonStyles.container}>
+      <StatusBar barStyle="light-content" backgroundColor={COLORS.primary} />
 
       {/* Red Header Section with Gradient Overlays */}
-      <View style={styles.headerSection}>
-        <View style={styles.gradientOverlay1} />
-        <View style={styles.gradientOverlay2} />
-        <View style={styles.gradientOverlay3} />
+      <View style={commonStyles.headerSection}>
+        <View style={commonStyles.gradientOverlay1} />
+        <View style={commonStyles.gradientOverlay2} />
+        <View style={commonStyles.gradientOverlay3} />
 
         {/* Back Button */}
         <TouchableOpacity
-          style={styles.backButton}
+          style={commonStyles.backButton}
           onPress={() => NativeBridge.closeActivity()}
           activeOpacity={0.7}
         >
-          <Text style={styles.backButtonText}>← Volver</Text>
+          <Text style={commonStyles.backButtonText}>← Volver</Text>
         </TouchableOpacity>
 
-        <Text style={styles.welcomeText}>Mis Movimientos</Text>
+        <Text style={[commonStyles.welcomeText, styles.headerWelcomeText]}>Mis Movimientos</Text>
         <Text style={styles.balanceText}>Historial reciente de transacciones</Text>
       </View>
 
       {/* Overlapping White List Container */}
-      <View style={styles.card}>
+      <View style={[commonStyles.card, styles.card]}>
         {loading ? (
           <View style={styles.emptyContainer}>
-            <ActivityIndicator size="large" color="#C8102E" />
+            <ActivityIndicator size="large" color={COLORS.primary} />
             <Text style={[styles.emptyText, { marginTop: 12 }]}>Cargando tus movimientos...</Text>
           </View>
         ) : movements.length === 0 ? (
@@ -153,72 +155,7 @@ export default function MovimientosBundle() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#F3F4F6',
-  },
-  headerSection: {
-    backgroundColor: '#C8102E', // Davivienda red base
-    paddingTop: Platform.OS === 'android' ? (StatusBar.currentHeight ? StatusBar.currentHeight + 30 : 55) : 50,
-    paddingHorizontal: 20,
-    paddingBottom: 55,
-    position: 'relative',
-    overflow: 'hidden',
-    borderBottomLeftRadius: 28,
-    borderBottomRightRadius: 28,
-  },
-  gradientOverlay1: {
-    position: 'absolute',
-    top: -80,
-    right: -60,
-    width: 200,
-    height: 200,
-    borderRadius: 100,
-    backgroundColor: '#E53E3E',
-    opacity: 0.25,
-  },
-  gradientOverlay2: {
-    position: 'absolute',
-    bottom: -100,
-    left: -80,
-    width: 240,
-    height: 240,
-    borderRadius: 120,
-    backgroundColor: '#7A091A',
-    opacity: 0.45,
-  },
-  gradientOverlay3: {
-    position: 'absolute',
-    bottom: -10,
-    right: -20,
-    width: 120,
-    height: 120,
-    borderRadius: 60,
-    backgroundColor: '#9B0F23',
-    opacity: 0.4,
-  },
-  backButton: {
-    position: 'absolute',
-    top: Platform.OS === 'android' ? (StatusBar.currentHeight ? StatusBar.currentHeight + 10 : 25) : 20,
-    left: 20,
-    zIndex: 20,
-    paddingVertical: 6,
-    paddingHorizontal: 12,
-    backgroundColor: 'rgba(255, 255, 255, 0.15)',
-    borderRadius: 15,
-  },
-  backButtonText: {
-    color: '#FFFFFF',
-    fontSize: 13,
-    fontWeight: '700',
-  },
-  welcomeText: {
-    fontSize: 28,
-    fontWeight: '900',
-    color: '#FFFFFF',
-    textAlign: 'center',
-    lineHeight: 34,
-    zIndex: 10,
+  headerWelcomeText: {
     marginTop: 15,
   },
   balanceText: {
@@ -231,18 +168,9 @@ const styles = StyleSheet.create({
   },
   card: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
-    borderTopLeftRadius: 36,
-    borderTopRightRadius: 36,
     marginHorizontal: 0, // Align full width for clean scroll lists
-    marginTop: -40, // Overlaps the red header
     paddingHorizontal: 20,
     paddingTop: 24,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: -6 },
-    shadowOpacity: 0.05,
-    shadowRadius: 10,
-    elevation: 4,
     overflow: 'hidden',
   },
   listContainer: {
@@ -274,17 +202,17 @@ const styles = StyleSheet.create({
     backgroundColor: '#FEE2E2', // Soft red
   },
   creditoCircle: {
-    backgroundColor: '#D1FAE5', // Soft green
+    backgroundColor: COLORS.bgSuccessLight, // Soft green
   },
   indicatorArrow: {
     fontSize: 20,
     fontWeight: 'bold',
   },
   debitoArrowColor: {
-    color: '#C8102E', // Davivienda red
+    color: COLORS.primary, // Davivienda red
   },
   creditoArrowColor: {
-    color: '#059669', // Safe emerald green
+    color: COLORS.textSuccess, // Safe emerald green
   },
   detailsCol: {
     flex: 1,
@@ -297,7 +225,7 @@ const styles = StyleSheet.create({
   },
   date: {
     fontSize: 12,
-    color: '#718096',
+    color: COLORS.textLight,
     marginBottom: 6,
   },
   statusBadge: {
@@ -307,20 +235,20 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   statusSuccess: {
-    backgroundColor: '#E6FFFA',
+    backgroundColor: COLORS.bgSuccessBadge,
   },
   statusPending: {
-    backgroundColor: '#FEFCBF',
+    backgroundColor: COLORS.bgPendingBadge,
   },
   statusText: {
     fontSize: 10,
     fontWeight: '700',
   },
   statusTextSuccess: {
-    color: '#00A389',
+    color: COLORS.textSuccessBadge,
   },
   statusTextPending: {
-    color: '#B7791F',
+    color: COLORS.textPendingBadge,
   },
   rightCol: {
     alignItems: 'flex-end',
@@ -331,14 +259,14 @@ const styles = StyleSheet.create({
     fontWeight: '700',
   },
   debitoColor: {
-    color: '#C8102E',
+    color: COLORS.primary,
   },
   creditoColor: {
-    color: '#059669',
+    color: COLORS.textSuccess,
   },
   typeText: {
     fontSize: 10,
-    color: '#A0AEC0',
+    color: COLORS.textMuted,
     fontWeight: '600',
     marginTop: 4,
     letterSpacing: 0.5,
@@ -355,7 +283,7 @@ const styles = StyleSheet.create({
   },
   emptyText: {
     fontSize: 15,
-    color: '#A0AEC0',
+    color: COLORS.textMuted,
     textAlign: 'center',
     fontWeight: '600',
   },

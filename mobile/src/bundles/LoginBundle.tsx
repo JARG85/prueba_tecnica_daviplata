@@ -15,6 +15,8 @@ import {
   Linking,
 } from 'react-native';
 import { NativeBridge } from '../services/bridge';
+import { COLORS } from '../styles/theme';
+import { commonStyles } from '../styles/commonStyles';
 
 export default function LoginBundle() {
   const [phone, setPhone] = useState('');
@@ -75,22 +77,22 @@ export default function LoginBundle() {
   );
 
   return (
-    <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor="#C8102E" />
+    <SafeAreaView style={commonStyles.container}>
+      <StatusBar barStyle="light-content" backgroundColor={COLORS.primary} />
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-        style={styles.keyboardView}
+        style={commonStyles.keyboardView}
       >
         <ScrollView
-          contentContainerStyle={styles.scrollContainer}
+          contentContainerStyle={commonStyles.scrollContainer}
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
         >
           {/* Red Header Section with Organic Gradient Overlays */}
-          <View style={styles.headerSection}>
-            <View style={styles.gradientOverlay1} />
-            <View style={styles.gradientOverlay2} />
-            <View style={styles.gradientOverlay3} />
+          <View style={commonStyles.headerSection}>
+            <View style={commonStyles.gradientOverlay1} />
+            <View style={commonStyles.gradientOverlay2} />
+            <View style={commonStyles.gradientOverlay3} />
 
             {/* Rounded Logo Container */}
             <View style={styles.logoRoundedContainer}>
@@ -101,23 +103,23 @@ export default function LoginBundle() {
               />
             </View>
 
-            <Text style={styles.welcomeText}>¡BIENVENIDO</Text>
-            <Text style={styles.welcomeText}>A DAVIVIENDA!</Text>
+            <Text style={commonStyles.welcomeText}>¡BIENVENIDO</Text>
+            <Text style={commonStyles.welcomeText}>A DAVIVIENDA!</Text>
           </View>
 
           {/* White Login Card (Overlapping) */}
-          <View style={styles.card}>
+          <View style={commonStyles.card}>
             {/* Form Section */}
             <View style={styles.formSection}>
               {/* Phone Input (Pill Shaped) */}
-              <View style={[styles.inputWrapper, isPhoneFocused && styles.inputWrapperFocused]}>
-                <View style={styles.iconContainer}>
+              <View style={[commonStyles.inputWrapper, isPhoneFocused && commonStyles.inputWrapperFocused]}>
+                <View style={commonStyles.iconContainer}>
                   <PhoneIcon />
                 </View>
                 <TextInput
-                  style={styles.textInput}
+                  style={commonStyles.textInput}
                   placeholder="Número de celular"
-                  placeholderTextColor="#A0AEC0"
+                  placeholderTextColor={COLORS.textMuted}
                   keyboardType="phone-pad"
                   maxLength={10}
                   value={phone}
@@ -128,14 +130,14 @@ export default function LoginBundle() {
               </View>
 
               {/* Password Input (Pill Shaped) */}
-              <View style={[styles.inputWrapper, isPasswordFocused && styles.inputWrapperFocused]}>
-                <View style={styles.iconContainer}>
+              <View style={[commonStyles.inputWrapper, isPasswordFocused && commonStyles.inputWrapperFocused]}>
+                <View style={commonStyles.iconContainer}>
                   <LockIcon />
                 </View>
                 <TextInput
-                  style={styles.textInput}
+                  style={commonStyles.textInput}
                   placeholder="Clave"
-                  placeholderTextColor="#A0AEC0"
+                  placeholderTextColor={COLORS.textMuted}
                   secureTextEntry={!showPassword}
                   keyboardType="default"
                   maxLength={32}
@@ -160,12 +162,12 @@ export default function LoginBundle() {
 
               {/* Submit Button (Pill Shaped) */}
               <TouchableOpacity
-                style={[styles.loginButton, (!isFormValid || loading) && styles.loginButtonDisabled]}
+                style={[commonStyles.primaryButton, (!isFormValid || loading) && commonStyles.primaryButtonDisabled]}
                 onPress={handleLogin}
                 disabled={!isFormValid || loading}
                 activeOpacity={0.8}
               >
-                <Text style={styles.loginButtonText}>
+                <Text style={commonStyles.primaryButtonText}>
                   {loading ? 'Ingresando...' : 'INGRESAR'}
                 </Text>
               </TouchableOpacity>
@@ -186,64 +188,13 @@ export default function LoginBundle() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#F3F4F6',
-  },
-  keyboardView: {
-    flex: 1,
-  },
-  scrollContainer: {
-    flexGrow: 1,
-    paddingBottom: 40,
-  },
-  headerSection: {
-    backgroundColor: '#C8102E', // Base Davivienda red
-    height: 330,
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingTop: Platform.OS === 'android' ? (StatusBar.currentHeight ? StatusBar.currentHeight + 10 : 35) : 30,
-    paddingBottom: 50,
-    position: 'relative',
-    overflow: 'hidden',
-  },
-  gradientOverlay1: {
-    position: 'absolute',
-    top: -120,
-    right: -80,
-    width: 280,
-    height: 280,
-    borderRadius: 140,
-    backgroundColor: '#E53E3E', // Soft crimson red glow
-    opacity: 0.3,
-  },
-  gradientOverlay2: {
-    position: 'absolute',
-    bottom: -150,
-    left: -100,
-    width: 320,
-    height: 320,
-    borderRadius: 160,
-    backgroundColor: '#7A091A', // Dark burgundy red depth shadow
-    opacity: 0.5,
-  },
-  gradientOverlay3: {
-    position: 'absolute',
-    bottom: -20,
-    right: -30,
-    width: 160,
-    height: 160,
-    borderRadius: 80,
-    backgroundColor: '#9B0F23',
-    opacity: 0.45,
-  },
   logoRoundedContainer: {
     width: 96,
     height: 96,
     borderRadius: 22,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: COLORS.cardBg,
     borderWidth: 2,
-    borderColor: '#FFFFFF',
+    borderColor: COLORS.cardBg,
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 20,
@@ -265,56 +216,48 @@ const styles = StyleSheet.create({
     width: 64,
     height: 64,
   },
-  welcomeText: {
-    fontSize: 28,
-    fontWeight: '900',
-    color: '#FFFFFF',
-    textAlign: 'center',
-    lineHeight: 34,
-    zIndex: 10,
-  },
-  card: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 36,
-    marginHorizontal: 16,
-    marginTop: -45, // Overlaps the red header
-    paddingHorizontal: 24,
-    paddingVertical: 36,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 10 },
-    shadowOpacity: 0.08,
-    shadowRadius: 16,
-    elevation: 6,
-  },
   formSection: {
     width: '100%',
   },
-  inputWrapper: {
+  eyeButton: {
+    paddingHorizontal: 4,
+  },
+  eyeText: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: COLORS.primary,
+  },
+  forgotPasswordContainer: {
+    alignSelf: 'flex-start',
+    paddingLeft: 8,
+    marginBottom: 28,
+  },
+  forgotPasswordText: {
+    color: COLORS.primary,
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  registerContainer: {
     flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#F3F4F6',
-    borderRadius: 25, // Pill shaped
-    paddingHorizontal: 20,
-    height: 52,
-    marginBottom: 20,
-  },
-  inputWrapperFocused: {
-    backgroundColor: '#FFFFFF',
-    borderWidth: 1.5,
-    borderColor: '#C8102E',
-  },
-  iconContainer: {
-    marginRight: 12,
-    width: 24,
-    alignItems: 'center',
     justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  registerText: {
+    color: COLORS.textLight,
+    fontSize: 14,
+  },
+  registerLink: {
+    color: COLORS.primary,
+    fontSize: 14,
+    fontWeight: 'bold',
   },
   phoneIconOuter: {
     width: 14,
     height: 24,
     borderRadius: 3,
     borderWidth: 1.8,
-    borderColor: '#718096',
+    borderColor: COLORS.textLight,
     alignItems: 'center',
     justifyContent: 'flex-end',
     paddingBottom: 3,
@@ -323,7 +266,7 @@ const styles = StyleSheet.create({
     width: 3,
     height: 3,
     borderRadius: 1.5,
-    backgroundColor: '#718096',
+    backgroundColor: COLORS.textLight,
   },
   lockIconOuter: {
     width: 18,
@@ -336,7 +279,7 @@ const styles = StyleSheet.create({
     height: 10,
     borderRadius: 5,
     borderWidth: 1.8,
-    borderColor: '#718096',
+    borderColor: COLORS.textLight,
     borderBottomWidth: 0,
     marginBottom: -2,
   },
@@ -345,71 +288,7 @@ const styles = StyleSheet.create({
     height: 11,
     borderRadius: 2,
     borderWidth: 1.8,
-    borderColor: '#718096',
+    borderColor: COLORS.textLight,
     backgroundColor: 'transparent',
-  },
-  textInput: {
-    flex: 1,
-    fontSize: 15,
-    color: '#1A202C',
-    height: '100%',
-    padding: 0,
-  },
-  eyeButton: {
-    paddingHorizontal: 4,
-  },
-  eyeText: {
-    fontSize: 12,
-    fontWeight: '700',
-    color: '#C8102E',
-  },
-  forgotPasswordContainer: {
-    alignSelf: 'flex-start',
-    paddingLeft: 8,
-    marginBottom: 28,
-  },
-  forgotPasswordText: {
-    color: '#C8102E',
-    fontSize: 14,
-    fontWeight: '600',
-  },
-  loginButton: {
-    backgroundColor: '#C8102E', // Davivienda red
-    height: 50,
-    borderRadius: 25,
-    alignItems: 'center',
-    justifyContent: 'center',
-    shadowColor: '#C8102E',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.25,
-    shadowRadius: 6,
-    elevation: 4,
-    marginBottom: 24,
-  },
-  loginButtonDisabled: {
-    backgroundColor: '#F5A3A8',
-    elevation: 0,
-    shadowOpacity: 0,
-  },
-  loginButtonText: {
-    color: '#FFFFFF',
-    fontSize: 16,
-    fontWeight: '900',
-    letterSpacing: 0.5,
-  },
-  registerContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 10,
-  },
-  registerText: {
-    color: '#718096',
-    fontSize: 14,
-  },
-  registerLink: {
-    color: '#C8102E',
-    fontSize: 14,
-    fontWeight: 'bold',
   },
 });

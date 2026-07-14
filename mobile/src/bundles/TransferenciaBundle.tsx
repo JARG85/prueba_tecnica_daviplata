@@ -13,6 +13,8 @@ import {
   ScrollView,
 } from 'react-native';
 import { NativeBridge } from '../services/bridge';
+import { COLORS } from '../styles/theme';
+import { commonStyles } from '../styles/commonStyles';
 
 interface TransferenciaBundleProps {
   currentPhone?: string;
@@ -132,50 +134,50 @@ export default function TransferenciaBundle(props: TransferenciaBundleProps) {
   );
 
   return (
-    <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor="#C8102E" />
+    <SafeAreaView style={commonStyles.container}>
+      <StatusBar barStyle="light-content" backgroundColor={COLORS.primary} />
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-        style={styles.keyboardView}
+        style={commonStyles.keyboardView}
       >
         <ScrollView
-          contentContainerStyle={styles.scrollContainer}
+          contentContainerStyle={commonStyles.scrollContainer}
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
         >
           {/* Red Header Section with Gradient Overlays */}
-          <View style={styles.headerSection}>
-            <View style={styles.gradientOverlay1} />
-            <View style={styles.gradientOverlay2} />
-            <View style={styles.gradientOverlay3} />
+          <View style={commonStyles.headerSection}>
+            <View style={commonStyles.gradientOverlay1} />
+            <View style={commonStyles.gradientOverlay2} />
+            <View style={commonStyles.gradientOverlay3} />
 
             {/* Back Button */}
             <TouchableOpacity
-              style={styles.backButton}
+              style={commonStyles.backButton}
               onPress={() => NativeBridge.closeActivity()}
               activeOpacity={0.7}
             >
-              <Text style={styles.backButtonText}>← Volver</Text>
+              <Text style={commonStyles.backButtonText}>← Volver</Text>
             </TouchableOpacity>
 
-            <Text style={styles.welcomeText}>Pasar Plata</Text>
+            <Text style={[commonStyles.welcomeText, styles.headerWelcomeText]}>Pasar Plata</Text>
             <Text style={styles.balanceText}>Tu saldo actual: {formatCurrency(balance)}</Text>
           </View>
 
           {/* White Card (Overlapping) */}
-          <View style={styles.card}>
+          <View style={commonStyles.card}>
             {/* Form Section */}
             <View style={styles.formSection}>
               {/* Phone Input (Pill Shaped) */}
-              <Text style={styles.inputLabel}>Número de celular destino</Text>
-              <View style={[styles.inputWrapper, isPhoneFocused && styles.inputWrapperFocused]}>
-                <View style={styles.iconContainer}>
+              <Text style={commonStyles.inputLabel}>Número de celular destino</Text>
+              <View style={[commonStyles.inputWrapper, isPhoneFocused && commonStyles.inputWrapperFocused]}>
+                <View style={commonStyles.iconContainer}>
                   <PhoneIcon />
                 </View>
                 <TextInput
-                  style={styles.textInput}
+                  style={commonStyles.textInput}
                   placeholder="Ej. 3001234567"
-                  placeholderTextColor="#A0AEC0"
+                  placeholderTextColor={COLORS.textMuted}
                   keyboardType="phone-pad"
                   maxLength={10}
                   value={destinationPhone}
@@ -186,15 +188,15 @@ export default function TransferenciaBundle(props: TransferenciaBundleProps) {
               </View>
 
               {/* Amount Input (Pill Shaped) */}
-              <Text style={styles.inputLabel}>Monto a transferir</Text>
-              <View style={[styles.inputWrapper, isAmountFocused && styles.inputWrapperFocused]}>
-                <View style={styles.iconContainer}>
+              <Text style={commonStyles.inputLabel}>Monto a transferir</Text>
+              <View style={[commonStyles.inputWrapper, isAmountFocused && commonStyles.inputWrapperFocused]}>
+                <View style={commonStyles.iconContainer}>
                   <DollarIcon />
                 </View>
                 <TextInput
-                  style={styles.textInput}
+                  style={commonStyles.textInput}
                   placeholder="Monto en pesos (Ej. 20000)"
-                  placeholderTextColor="#A0AEC0"
+                  placeholderTextColor={COLORS.textMuted}
                   keyboardType="numeric"
                   value={amountStr}
                   onChangeText={setAmountStr}
@@ -204,15 +206,15 @@ export default function TransferenciaBundle(props: TransferenciaBundleProps) {
               </View>
 
               {/* Message Input (Pill Shaped) */}
-              <Text style={styles.inputLabel}>Mensaje (Opcional)</Text>
-              <View style={[styles.inputWrapper, isDescFocused && styles.inputWrapperFocused]}>
-                <View style={styles.iconContainer}>
+              <Text style={commonStyles.inputLabel}>Mensaje (Opcional)</Text>
+              <View style={[commonStyles.inputWrapper, isDescFocused && commonStyles.inputWrapperFocused]}>
+                <View style={commonStyles.iconContainer}>
                   <MessageIcon />
                 </View>
                 <TextInput
-                  style={styles.textInput}
+                  style={commonStyles.textInput}
                   placeholder="Ej. Pago de almuerzo"
-                  placeholderTextColor="#A0AEC0"
+                  placeholderTextColor={COLORS.textMuted}
                   value={description}
                   onChangeText={setDescription}
                   onFocus={() => setIsDescFocused(true)}
@@ -222,12 +224,12 @@ export default function TransferenciaBundle(props: TransferenciaBundleProps) {
 
               {/* Submit Button */}
               <TouchableOpacity
-                style={[styles.transferButton, (!isFormValid || loading) && styles.transferButtonDisabled]}
+                style={[commonStyles.primaryButton, (!isFormValid || loading) && commonStyles.primaryButtonDisabled]}
                 onPress={handleTransfer}
                 disabled={!isFormValid || loading}
                 activeOpacity={0.8}
               >
-                <Text style={styles.transferButtonText}>
+                <Text style={commonStyles.primaryButtonText}>
                   {loading ? 'Procesando...' : 'TRANSFERIR PLATA'}
                 </Text>
               </TouchableOpacity>
@@ -240,79 +242,7 @@ export default function TransferenciaBundle(props: TransferenciaBundleProps) {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#F3F4F6',
-  },
-  keyboardView: {
-    flex: 1,
-  },
-  scrollContainer: {
-    flexGrow: 1,
-    paddingBottom: 40,
-  },
-  headerSection: {
-    backgroundColor: '#C8102E', // Davivienda red base
-    paddingTop: Platform.OS === 'android' ? (StatusBar.currentHeight ? StatusBar.currentHeight + 30 : 55) : 50,
-    paddingHorizontal: 20,
-    paddingBottom: 55,
-    position: 'relative',
-    overflow: 'hidden',
-    borderBottomLeftRadius: 28,
-    borderBottomRightRadius: 28,
-  },
-  gradientOverlay1: {
-    position: 'absolute',
-    top: -80,
-    right: -60,
-    width: 200,
-    height: 200,
-    borderRadius: 100,
-    backgroundColor: '#E53E3E',
-    opacity: 0.25,
-  },
-  gradientOverlay2: {
-    position: 'absolute',
-    bottom: -100,
-    left: -80,
-    width: 240,
-    height: 240,
-    borderRadius: 120,
-    backgroundColor: '#7A091A',
-    opacity: 0.45,
-  },
-  gradientOverlay3: {
-    position: 'absolute',
-    bottom: -10,
-    right: -20,
-    width: 120,
-    height: 120,
-    borderRadius: 60,
-    backgroundColor: '#9B0F23',
-    opacity: 0.4,
-  },
-  backButton: {
-    position: 'absolute',
-    top: Platform.OS === 'android' ? (StatusBar.currentHeight ? StatusBar.currentHeight + 10 : 25) : 20,
-    left: 20,
-    zIndex: 20,
-    paddingVertical: 6,
-    paddingHorizontal: 12,
-    backgroundColor: 'rgba(255, 255, 255, 0.15)',
-    borderRadius: 15,
-  },
-  backButtonText: {
-    color: '#FFFFFF',
-    fontSize: 13,
-    fontWeight: '700',
-  },
-  welcomeText: {
-    fontSize: 28,
-    fontWeight: '900',
-    color: '#FFFFFF',
-    textAlign: 'center',
-    lineHeight: 34,
-    zIndex: 10,
+  headerWelcomeText: {
     marginTop: 15,
   },
   balanceText: {
@@ -323,55 +253,15 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     zIndex: 10,
   },
-  card: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 36,
-    marginHorizontal: 16,
-    marginTop: -40, // Overlaps the red header
-    paddingHorizontal: 24,
-    paddingVertical: 32,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 10 },
-    shadowOpacity: 0.08,
-    shadowRadius: 16,
-    elevation: 6,
-  },
   formSection: {
     width: '100%',
-  },
-  inputLabel: {
-    fontSize: 13,
-    fontWeight: '600',
-    color: '#4A5568',
-    marginBottom: 8,
-    marginLeft: 4,
-  },
-  inputWrapper: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#F3F4F6',
-    borderRadius: 25, // Pill shaped
-    paddingHorizontal: 20,
-    height: 52,
-    marginBottom: 20,
-  },
-  inputWrapperFocused: {
-    backgroundColor: '#FFFFFF',
-    borderWidth: 1.5,
-    borderColor: '#C8102E',
-  },
-  iconContainer: {
-    marginRight: 12,
-    width: 24,
-    alignItems: 'center',
-    justifyContent: 'center',
   },
   phoneIconOuter: {
     width: 14,
     height: 24,
     borderRadius: 3,
     borderWidth: 1.8,
-    borderColor: '#718096',
+    borderColor: COLORS.textLight,
     alignItems: 'center',
     justifyContent: 'flex-end',
     paddingBottom: 3,
@@ -380,19 +270,19 @@ const styles = StyleSheet.create({
     width: 3,
     height: 3,
     borderRadius: 1.5,
-    backgroundColor: '#718096',
+    backgroundColor: COLORS.textLight,
   },
   dollarIconOuter: {
     width: 22,
     height: 22,
     borderRadius: 11,
     borderWidth: 1.8,
-    borderColor: '#718096',
+    borderColor: COLORS.textLight,
     alignItems: 'center',
     justifyContent: 'center',
   },
   dollarIconText: {
-    color: '#718096',
+    color: COLORS.textLight,
     fontSize: 12,
     fontWeight: 'bold',
     lineHeight: 14,
@@ -408,7 +298,7 @@ const styles = StyleSheet.create({
     height: 14,
     borderRadius: 3,
     borderWidth: 1.8,
-    borderColor: '#718096',
+    borderColor: COLORS.textLight,
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: 2,
@@ -416,45 +306,13 @@ const styles = StyleSheet.create({
   messageIconLine1: {
     width: '100%',
     height: 1.5,
-    backgroundColor: '#718096',
+    backgroundColor: COLORS.textLight,
     marginBottom: 2,
   },
   messageIconLine2: {
     width: '60%',
     height: 1.5,
-    backgroundColor: '#718096',
+    backgroundColor: COLORS.textLight,
     alignSelf: 'flex-start',
-  },
-  textInput: {
-    flex: 1,
-    fontSize: 15,
-    color: '#1A202C',
-    height: '100%',
-    padding: 0,
-  },
-  transferButton: {
-    backgroundColor: '#C8102E', // Davivienda red
-    height: 50,
-    borderRadius: 25,
-    alignItems: 'center',
-    justifyContent: 'center',
-    shadowColor: '#C8102E',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.25,
-    shadowRadius: 6,
-    elevation: 4,
-    marginTop: 10,
-    marginBottom: 10,
-  },
-  transferButtonDisabled: {
-    backgroundColor: '#F5A3A8',
-    elevation: 0,
-    shadowOpacity: 0,
-  },
-  transferButtonText: {
-    color: '#FFFFFF',
-    fontSize: 16,
-    fontWeight: '900',
-    letterSpacing: 0.5,
   },
 });
