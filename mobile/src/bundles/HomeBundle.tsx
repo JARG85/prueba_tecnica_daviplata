@@ -219,9 +219,9 @@ const styles = StyleSheet.create({
   },
   headerSection: {
     backgroundColor: '#C8102E', // Davivienda red base
-    paddingTop: Platform.OS === 'android' ? (StatusBar.currentHeight ? StatusBar.currentHeight + 40 : 65) : 60,
+    paddingTop: Platform.OS === 'android' ? (StatusBar.currentHeight ? StatusBar.currentHeight + 60 : 85) : 80,
     paddingHorizontal: 20,
-    paddingBottom: 60,
+    paddingBottom: 70,
     position: 'relative',
     overflow: 'hidden',
     borderBottomLeftRadius: 28,
