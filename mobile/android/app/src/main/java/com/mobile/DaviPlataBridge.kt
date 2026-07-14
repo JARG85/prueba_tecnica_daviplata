@@ -50,6 +50,17 @@ class DaviPlataBridge(private val reactContext: ReactApplicationContext) : React
                 
                 if (activity != null) {
                     SecurityManager.saveSession(activity, sessionJson)
+                    
+                    // Pre-fetch fresh balance during login so initial props are correct
+                    try {
+                        val sessionObj = JSONObject(sessionJson)
+                        val userId = sessionObj.getString("userId")
+                        val freshBalance = ApiService.getBalance(userId)
+                        DataManager.updateBalance(reactApplicationContext, freshBalance)
+                    } catch (e: Exception) {
+                        Log.e(TAG, "Failed to pre-fetch balance during login", e)
+                    }
+
                     activity.runOnUiThread {
                         val intent = Intent(activity, HomeActivity::class.java).apply {
                             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
@@ -188,12 +199,12 @@ class DaviPlataBridge(private val reactContext: ReactApplicationContext) : React
             val amount = transferObj.getDouble("amount")
             val description = transferObj.optString("description", "Transferencia")
 
-            val currentBalance = DataManager.getBalance(activity)
+            val currentBalance = DataManager.getBalance(reactApplicationContext)
             val newBalance = currentBalance - amount
-            DataManager.updateBalance(activity, newBalance)
+            DataManager.updateBalance(reactApplicationContext, newBalance)
 
             DataManager.addMovement(
-                context = activity,
+                context = reactApplicationContext,
                 type = "DEBITO",
                 value = amount,
                 description = "Envío a cel $destinationPhone - $description",
@@ -227,12 +238,7 @@ class DaviPlataBridge(private val reactContext: ReactApplicationContext) : React
 
     @ReactMethod
     fun getBalance(promise: Promise) {
-        val activity = reactContext.currentActivity
-        if (activity != null) {
-            promise.resolve(DataManager.getBalance(activity))
-        } else {
-            promise.resolve(100000.0)
-        }
+        promise.resolve(DataManager.getBalance(reactApplicationContext))
     }
 
     @ReactMethod
