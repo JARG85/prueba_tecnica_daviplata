@@ -86,13 +86,21 @@ export default function LoginBundle() {
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
         >
-          {/* Red Header Section */}
+          {/* Red Header Section with Organic Gradient Overlays */}
           <View style={styles.headerSection}>
-            <Image
-              source={require('../assets/images/logo_davivienda.png')}
-              style={styles.headerLogoImage}
-              resizeMode="contain"
-            />
+            <View style={styles.gradientOverlay1} />
+            <View style={styles.gradientOverlay2} />
+            <View style={styles.gradientOverlay3} />
+
+            {/* Circular Logo Container */}
+            <View style={styles.logoCircleContainer}>
+              <Image
+                source={require('../assets/images/logo_davivienda.png')}
+                style={styles.headerLogoImage}
+                resizeMode="contain"
+              />
+            </View>
+
             <Text style={styles.welcomeText}>¡BIENVENIDO</Text>
             <Text style={styles.welcomeText}>A DAVIVIENDA!</Text>
           </View>
@@ -190,17 +198,72 @@ const styles = StyleSheet.create({
     paddingBottom: 40,
   },
   headerSection: {
-    backgroundColor: '#C8102E', // Davivienda red
+    backgroundColor: '#C8102E', // Base Davivienda red
     height: 330,
     justifyContent: 'center',
     alignItems: 'center',
     paddingTop: Platform.OS === 'android' ? (StatusBar.currentHeight ? StatusBar.currentHeight + 10 : 35) : 30,
     paddingBottom: 50,
+    position: 'relative',
+    overflow: 'hidden',
+  },
+  gradientOverlay1: {
+    position: 'absolute',
+    top: -120,
+    right: -80,
+    width: 280,
+    height: 280,
+    borderRadius: 140,
+    backgroundColor: '#E53E3E', // Soft crimson red glow
+    opacity: 0.3,
+  },
+  gradientOverlay2: {
+    position: 'absolute',
+    bottom: -150,
+    left: -100,
+    width: 320,
+    height: 320,
+    borderRadius: 160,
+    backgroundColor: '#7A091A', // Dark burgundy red depth shadow
+    opacity: 0.5,
+  },
+  gradientOverlay3: {
+    position: 'absolute',
+    bottom: -20,
+    right: -30,
+    width: 160,
+    height: 160,
+    borderRadius: 80,
+    backgroundColor: '#9B0F23',
+    opacity: 0.45,
+  },
+  logoCircleContainer: {
+    width: 96,
+    height: 96,
+    borderRadius: 48,
+    backgroundColor: '#FFFFFF',
+    borderWidth: 2,
+    borderColor: '#FFFFFF',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 20,
+    overflow: 'hidden',
+    zIndex: 10,
+    ...Platform.select({
+      ios: {
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.15,
+        shadowRadius: 6,
+      },
+      android: {
+        elevation: 5,
+      },
+    }),
   },
   headerLogoImage: {
-    width: 220,
-    height: 90,
-    marginBottom: 10,
+    width: 64,
+    height: 64,
   },
   welcomeText: {
     fontSize: 28,
@@ -208,6 +271,7 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     textAlign: 'center',
     lineHeight: 34,
+    zIndex: 10,
   },
   card: {
     backgroundColor: '#FFFFFF',
@@ -228,7 +292,7 @@ const styles = StyleSheet.create({
   inputWrapper: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#F3F4F6', // Gray input background from design
+    backgroundColor: '#F3F4F6',
     borderRadius: 25, // Pill shaped
     paddingHorizontal: 20,
     height: 52,
