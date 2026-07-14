@@ -17,12 +17,10 @@ import { NativeBridge } from '../services/bridge';
 export default function LoginBundle() {
   const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
-  const [name, setName] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const [isNameFocused, setIsNameFocused] = useState(false);
   const [isPhoneFocused, setIsPhoneFocused] = useState(false);
   const [isPasswordFocused, setIsPasswordFocused] = useState(false);
 
@@ -99,21 +97,7 @@ export default function LoginBundle() {
 
           {/* Form */}
           <View style={styles.formSection}>
-            {/* Name input (Optional for personalization) */}
-            <Text style={styles.inputLabel}>Tu Nombre (Opcional)</Text>
-            <View style={[styles.inputWrapper, isNameFocused && styles.inputWrapperFocused]}>
-              <Text style={styles.inputIcon}>👤</Text>
-              <TextInput
-                style={styles.textInput}
-                placeholder="Ej. Juan Pérez"
-                placeholderTextColor="#A0AEC0"
-                autoCapitalize="words"
-                value={name}
-                onChangeText={setName}
-                onFocus={() => setIsNameFocused(true)}
-                onBlur={() => setIsNameFocused(false)}
-              />
-            </View>
+
 
             {/* Phone Number Input */}
             <Text style={styles.inputLabel}>Número de celular</Text>
