@@ -11,6 +11,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
+  Image,
 } from 'react-native';
 import { NativeBridge } from '../services/bridge';
 
@@ -52,27 +53,9 @@ export default function LoginBundle() {
 
   const isFormValid = phone.length === 10 && password.length >= 4;
 
-  const DaviviendaLogo = () => (
-    <View style={styles.logoContainer}>
-      <View style={styles.houseContainer}>
-        {/* Roof (Yellow Triangle) */}
-        <View style={styles.roof} />
-        {/* Body (Red Square) */}
-        <View style={styles.body}>
-          {/* Door (White Rectangle) */}
-          <View style={styles.door} />
-        </View>
-      </View>
-      <View style={styles.logoTextContainer}>
-        <Text style={styles.davi}>davi</Text>
-        <Text style={styles.plata}>plata</Text>
-      </View>
-    </View>
-  );
-
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
+      <StatusBar barStyle="dark-content" backgroundColor="#F4F6F9" />
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
         style={styles.keyboardView}
@@ -84,99 +67,106 @@ export default function LoginBundle() {
         >
           {/* Logo Section */}
           <View style={styles.logoSection}>
-            <DaviviendaLogo />
+            <Image
+              source={require('../assets/images/logo_davivienda.png')}
+              style={styles.logoImage}
+              resizeMode="contain"
+            />
           </View>
 
-          {/* Welcome Message */}
-          <View style={styles.welcomeSection}>
-            <Text style={styles.welcomeTitle}>¡Qué bueno verte!</Text>
-            <Text style={styles.welcomeSubtitle}>
-              Ingresa tus datos para acceder a tu plata de forma segura.
-            </Text>
-          </View>
-
-          {/* Form */}
-          <View style={styles.formSection}>
-
-
-            {/* Phone Number Input */}
-            <Text style={styles.inputLabel}>Número de celular</Text>
-            <View style={[styles.inputWrapper, isPhoneFocused && styles.inputWrapperFocused]}>
-              <Text style={styles.phonePrefix}>🇨🇴 +57</Text>
-              <View style={styles.phoneDivider} />
-              <TextInput
-                style={styles.textInput}
-                placeholder="Celular de 10 dígitos"
-                placeholderTextColor="#A0AEC0"
-                keyboardType="phone-pad"
-                maxLength={10}
-                value={phone}
-                onChangeText={setPhone}
-                onFocus={() => setIsPhoneFocused(true)}
-                onBlur={() => setIsPhoneFocused(false)}
-              />
+          {/* Login Card */}
+          <View style={styles.card}>
+            {/* Welcome Message */}
+            <View style={styles.welcomeSection}>
+              <Text style={styles.welcomeTitle}>¡Qué bueno verte!</Text>
+              <Text style={styles.welcomeSubtitle}>
+                Ingresa tus datos para acceder a tu plata de forma segura.
+              </Text>
             </View>
 
-            {/* Password (Clave) Input */}
-            <Text style={styles.inputLabel}>Clave DaviPlata / Contraseña</Text>
-            <View style={[styles.inputWrapper, isPasswordFocused && styles.inputWrapperFocused]}>
-              <Text style={styles.inputIcon}>🔑</Text>
-              <TextInput
-                style={styles.textInput}
-                placeholder="Clave de ingreso"
-                placeholderTextColor="#A0AEC0"
-                secureTextEntry={!showPassword}
-                keyboardType="default"
-                maxLength={32}
-                value={password}
-                onChangeText={setPassword}
-                onFocus={() => setIsPasswordFocused(true)}
-                onBlur={() => setIsPasswordFocused(false)}
-              />
+            {/* Form */}
+            <View style={styles.formSection}>
+              {/* Phone Number Input */}
+              <Text style={styles.inputLabel}>Número de celular</Text>
+              <View style={[styles.inputWrapper, isPhoneFocused && styles.inputWrapperFocused]}>
+                <Text style={styles.phonePrefix}>🇨🇴 +57</Text>
+                <View style={styles.phoneDivider} />
+                <TextInput
+                  style={styles.textInput}
+                  placeholder="Celular de 10 dígitos"
+                  placeholderTextColor="#A0AEC0"
+                  keyboardType="phone-pad"
+                  maxLength={10}
+                  value={phone}
+                  onChangeText={setPhone}
+                  onFocus={() => setIsPhoneFocused(true)}
+                  onBlur={() => setIsPhoneFocused(false)}
+                />
+              </View>
+
+              {/* Password Input */}
+              <Text style={styles.inputLabel}>Clave DaviPlata / Contraseña</Text>
+              <View style={[styles.inputWrapper, isPasswordFocused && styles.inputWrapperFocused]}>
+                <Text style={styles.inputIcon}>🔑</Text>
+                <TextInput
+                  style={styles.textInput}
+                  placeholder="Clave de ingreso"
+                  placeholderTextColor="#A0AEC0"
+                  secureTextEntry={!showPassword}
+                  keyboardType="default"
+                  maxLength={32}
+                  value={password}
+                  onChangeText={setPassword}
+                  onFocus={() => setIsPasswordFocused(true)}
+                  onBlur={() => setIsPasswordFocused(false)}
+                />
+                <TouchableOpacity
+                  onPress={() => setShowPassword(!showPassword)}
+                  style={styles.eyeButton}
+                  activeOpacity={0.7}
+                >
+                  <Text style={styles.eyeText}>{showPassword ? 'Ocultar' : 'Ver'}</Text>
+                </TouchableOpacity>
+              </View>
+
+              {/* Remember Me & Forgot Password */}
+              <View style={styles.rememberRow}>
+                <TouchableOpacity
+                  style={styles.checkboxContainer}
+                  onPress={() => setRememberMe(!rememberMe)}
+                  activeOpacity={0.7}
+                >
+                  <View style={[styles.checkbox, rememberMe && styles.checkboxChecked]}>
+                    {rememberMe && <Text style={styles.checkboxCheckmark}>✓</Text>}
+                  </View>
+                  <Text style={styles.rememberText}>Recordar celular</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.linkButton} activeOpacity={0.7}>
+                  <Text style={styles.linkText}>¿Olvidó su clave?</Text>
+                </TouchableOpacity>
+              </View>
+
+              {/* Submit Button */}
               <TouchableOpacity
-                onPress={() => setShowPassword(!showPassword)}
-                style={styles.eyeButton}
-                activeOpacity={0.7}
+                style={[styles.loginButton, (!isFormValid || loading) && styles.loginButtonDisabled]}
+                onPress={handleLogin}
+                disabled={!isFormValid || loading}
+                activeOpacity={0.8}
               >
-                <Text style={styles.eyeText}>{showPassword ? 'Ocultar' : 'Ver'}</Text>
+                <Text style={styles.loginButtonText}>
+                  {loading ? 'Ingresando...' : 'Ingresar'}
+                </Text>
               </TouchableOpacity>
-            </View>
 
-            {/* Remember Me & Help Links */}
-            <View style={styles.rememberRow}>
-              <TouchableOpacity
-                style={styles.checkboxContainer}
-                onPress={() => setRememberMe(!rememberMe)}
-                activeOpacity={0.7}
-              >
-                <View style={[styles.checkbox, rememberMe && styles.checkboxChecked]}>
-                  {rememberMe && <Text style={styles.checkboxCheckmark}>✓</Text>}
-                </View>
-                <Text style={styles.rememberText}>Recordar celular</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.linkButton} activeOpacity={0.7}>
-                <Text style={styles.linkText}>¿Olvidó su clave?</Text>
-              </TouchableOpacity>
-            </View>
-
-            {/* Submit Button */}
-            <TouchableOpacity
-              style={[styles.loginButton, (!isFormValid || loading) && styles.loginButtonDisabled]}
-              onPress={handleLogin}
-              disabled={!isFormValid || loading}
-              activeOpacity={0.8}
-            >
-              <Text style={styles.loginButtonText}>{loading ? 'Ingresando...' : 'Ingresar'}</Text>
-            </TouchableOpacity>
-
-            {/* Additional Links */}
-            <View style={styles.footerLinks}>
-              <TouchableOpacity style={styles.linkButton} activeOpacity={0.7}>
-                <Text style={styles.linkText}>¿Cómo usar DaviPlata?</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.linkButton} activeOpacity={0.7}>
-                <Text style={styles.secondaryLinkText}>¿No tienes cuenta? Regístrate</Text>
-              </TouchableOpacity>
+              {/* Footer Links */}
+              <View style={styles.footerLinks}>
+                <TouchableOpacity style={styles.linkButton} activeOpacity={0.7}>
+                  <Text style={styles.secondaryLinkText}>¿Cómo usar DaviPlata?</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.linkButton} activeOpacity={0.7}>
+                  <Text style={styles.secondaryLinkTextBold}>¿No tienes cuenta? Regístrate</Text>
+                </TouchableOpacity>
+              </View>
             </View>
           </View>
 
@@ -196,7 +186,7 @@ export default function LoginBundle() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#F4F6F9',
   },
   keyboardView: {
     flex: 1,
@@ -204,80 +194,46 @@ const styles = StyleSheet.create({
   scrollContainer: {
     flexGrow: 1,
     justifyContent: 'center',
-    paddingHorizontal: 28,
+    paddingHorizontal: 20,
     paddingTop: Platform.OS === 'android' ? (StatusBar.currentHeight ? StatusBar.currentHeight + 20 : 45) : 30,
     paddingBottom: 40,
   },
   logoSection: {
     alignItems: 'center',
-    marginBottom: 25,
+    marginBottom: 20,
   },
-  logoContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginVertical: 10,
+  logoImage: {
+    width: 220,
+    height: 90,
   },
-  houseContainer: {
-    alignItems: 'center',
-    marginRight: 8,
-  },
-  roof: {
-    width: 0,
-    height: 0,
-    backgroundColor: 'transparent',
-    borderStyle: 'solid',
-    borderLeftWidth: 14,
-    borderRightWidth: 14,
-    borderBottomWidth: 10,
-    borderLeftColor: 'transparent',
-    borderRightColor: 'transparent',
-    borderBottomColor: '#FFC72C', // Yellow/Gold
-  },
-  body: {
-    width: 22,
-    height: 16,
-    backgroundColor: '#E50014', // Davivienda Red
-    position: 'relative',
-    marginTop: -1, // Avoid gap
-  },
-  door: {
-    width: 6,
-    height: 10,
+  card: {
     backgroundColor: '#FFFFFF',
-    position: 'absolute',
-    bottom: 0,
-    left: 8, // (22 - 6) / 2 = 8
-  },
-  logoTextContainer: {
-    flexDirection: 'row',
-    alignItems: 'baseline',
-  },
-  davi: {
-    fontSize: 28,
-    fontWeight: '700',
-    color: '#4A5568',
-    letterSpacing: -0.5,
-  },
-  plata: {
-    fontSize: 28,
-    fontWeight: '700',
-    color: '#E50014',
-    letterSpacing: -0.5,
+    borderRadius: 24,
+    paddingHorizontal: 24,
+    paddingVertical: 32,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.05,
+    shadowRadius: 15,
+    elevation: 4,
   },
   welcomeSection: {
     marginBottom: 25,
+    alignItems: 'center',
   },
   welcomeTitle: {
-    fontSize: 26,
+    fontSize: 24,
     fontWeight: 'bold',
     color: '#1A202C',
     marginBottom: 6,
+    textAlign: 'center',
   },
   welcomeSubtitle: {
-    fontSize: 15,
+    fontSize: 14,
     color: '#718096',
     lineHeight: 20,
+    textAlign: 'center',
+    paddingHorizontal: 10,
   },
   formSection: {
     width: '100%',
@@ -292,12 +248,12 @@ const styles = StyleSheet.create({
   inputWrapper: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#F7FAFC',
+    backgroundColor: '#F8FAFC',
     borderWidth: 1,
     borderColor: '#E2E8F0',
     borderRadius: 14,
     paddingHorizontal: 16,
-    height: 56,
+    height: 58,
     marginBottom: 20,
   },
   inputWrapperFocused: {
@@ -309,6 +265,9 @@ const styles = StyleSheet.create({
         shadowOffset: { width: 0, height: 3 },
         shadowOpacity: 0.1,
         shadowRadius: 5,
+      },
+      android: {
+        elevation: 3,
       },
     }),
   },
@@ -333,7 +292,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#1A202C',
     height: '100%',
-    padding: 0, // Reset default Android padding
+    padding: 0,
   },
   eyeButton: {
     paddingHorizontal: 8,
@@ -378,10 +337,15 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#4A5568',
   },
+  linkText: {
+    color: '#E50014',
+    fontSize: 14,
+    fontWeight: '600',
+  },
   loginButton: {
     backgroundColor: '#E50014',
-    height: 54,
-    borderRadius: 27,
+    height: 56,
+    borderRadius: 28,
     alignItems: 'center',
     justifyContent: 'center',
     ...Platform.select({
@@ -421,21 +385,21 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   linkButton: {
-    paddingVertical: 8,
-  },
-  linkText: {
-    color: '#E50014',
-    fontSize: 14,
-    fontWeight: '600',
+    paddingVertical: 6,
   },
   secondaryLinkText: {
     color: '#718096',
-    fontSize: 13,
-    marginTop: 15,
+    fontSize: 14,
+  },
+  secondaryLinkTextBold: {
+    color: '#E50014',
+    fontSize: 14,
+    fontWeight: '600',
+    marginTop: 10,
   },
   securityBadgeContainer: {
     alignItems: 'center',
-    marginTop: 40,
+    marginTop: 30,
     borderTopWidth: 1,
     borderTopColor: '#EDF2F7',
     paddingTop: 20,
@@ -447,4 +411,3 @@ const styles = StyleSheet.create({
     letterSpacing: 0.3,
   },
 });
-
