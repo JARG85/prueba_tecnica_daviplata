@@ -1,16 +1,16 @@
 class Api::V1::MovementsController < ApplicationController
   def index
-    user = User.find(params[:user_id])[cite: 1]
+    user = User.find(params[:user_id])
     # Muestra solo movimientos del usuario autenticado
-    movements = user.movements.order(created_at: :desc)[cite: 1]
+    movements = user.movements.order(created_at: :desc)
 
     render json: movements.map { |m|
       {
-        fecha: m.created_at.iso8601,[cite: 1]
-        tipo: m.movement_type,[cite: 1]
-        valor: m.amount.to_f,[cite: 1]
-        descripcion: m.description,[cite: 1]
-        estado: m.status[cite: 1]
+        fecha: m.created_at.iso8601,
+        tipo: m.movement_type,
+        valor: m.amount.to_f,
+        descripcion: m.description,
+        estado: m.status
       }
     }, status: :ok
   rescue ActiveRecord::RecordNotFound
