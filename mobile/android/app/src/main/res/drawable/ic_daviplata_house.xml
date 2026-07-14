@@ -1,0 +1,18 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="120dp"
+    android:height="100dp"
+    android:viewportWidth="120"
+    android:viewportHeight="100">
+    <!-- Roof (Yellow Triangle) -->
+    <path
+        android:fillColor="#FFC72C"
+        android:pathData="M 60,10 L 25,40 L 95,40 Z" />
+    <!-- Body (Red Square) -->
+    <path
+        android:fillColor="#E50014"
+        android:pathData="M 35,40 L 85,40 L 85,85 L 35,85 Z" />
+    <!-- Door (White Rectangle) -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M 53,60 L 67,60 L 67,85 L 53,85 Z" />
+</vector>

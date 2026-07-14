@@ -2,7 +2,12 @@ package com.mobile
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
+import android.view.animation.DecelerateInterpolator
+import android.widget.ImageView
+import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import org.json.JSONObject
 import java.text.SimpleDateFormat
@@ -14,11 +19,48 @@ class SplashActivity : AppCompatActivity() {
 
     companion object {
         private const val TAG = "SplashActivity"
+        private const val SPLASH_DELAY_MS = 1800L
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        checkSessionAndNavigate()
+        setContentView(R.layout.activity_splash)
+
+        // Find views for animation
+        val splashLogo = findViewById<ImageView>(R.id.splash_logo)
+        val textContainer = findViewById<LinearLayout>(R.id.splash_text_container)
+
+        // Perform fade-in & scale animation for the Davivienda Logo
+        splashLogo?.apply {
+            alpha = 0f
+            scaleX = 0.7f
+            scaleY = 0.7f
+            animate()
+                .alpha(1f)
+                .scaleX(1f)
+                .scaleY(1f)
+                .setDuration(800)
+                .setInterpolator(DecelerateInterpolator())
+                .start()
+        }
+
+        // Perform delayed fade-in for the text logo container
+        textContainer?.apply {
+            alpha = 0f
+            translationY = 20f
+            animate()
+                .alpha(1f)
+                .translationY(0f)
+                .setStartDelay(200)
+                .setDuration(800)
+                .setInterpolator(DecelerateInterpolator())
+                .start()
+        }
+
+        // Delay navigation to show the branding and finish loading
+        Handler(Looper.getMainLooper()).postDelayed({
+            checkSessionAndNavigate()
+        }, SPLASH_DELAY_MS)
     }
 
     private fun checkSessionAndNavigate() {
@@ -54,3 +96,4 @@ class SplashActivity : AppCompatActivity() {
         }
     }
 }
+
