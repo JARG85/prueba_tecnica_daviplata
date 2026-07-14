@@ -9,8 +9,8 @@ import {
   ScrollView,
   Image,
 } from 'react-native';
-import { NativeBridge } from '../services/bridge';
-import { COLORS } from '../styles/theme';
+import { NativeBridge } from '../../services/bridge';
+import { COLORS } from '../../styles/theme';
 import { styles } from './HomeBundle.styles';
 
 interface HomeBundleProps {
@@ -155,7 +155,7 @@ export default function HomeBundle(props: HomeBundleProps) {
             <View style={styles.logoCol}>
               <View style={styles.logoRoundedBadge}>
                 <Image
-                  source={require('../assets/images/logo_davivienda.png')}
+                  source={require('../../assets/images/logo_davivienda.png')}
                   style={styles.headerLogoImageRight}
                   resizeMode="contain"
                 />

@@ -9,9 +9,9 @@ import {
   Platform,
   TouchableOpacity,
 } from 'react-native';
-import { NativeBridge } from '../services/bridge';
-import { COLORS } from '../styles/theme';
-import { commonStyles } from '../styles/commonStyles';
+import { NativeBridge } from '../../services/bridge';
+import { COLORS } from '../../styles/theme';
+import { commonStyles } from '../../styles/commonStyles';
 import { styles } from './MovimientosBundle.styles';
 
 export interface Movement {

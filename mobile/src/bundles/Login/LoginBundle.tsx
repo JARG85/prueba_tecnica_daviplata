@@ -13,9 +13,9 @@ import {
   Image,
   Linking,
 } from 'react-native';
-import { NativeBridge } from '../services/bridge';
-import { COLORS } from '../styles/theme';
-import { commonStyles } from '../styles/commonStyles';
+import { NativeBridge } from '../../services/bridge';
+import { COLORS } from '../../styles/theme';
+import { commonStyles } from '../../styles/commonStyles';
 import { styles } from './LoginBundle.styles';
 
 export default function LoginBundle() {
@@ -97,7 +97,7 @@ export default function LoginBundle() {
             {/* Rounded Logo Container */}
             <View style={styles.logoRoundedContainer}>
               <Image
-                source={require('../assets/images/logo_davivienda.png')}
+                source={require('../../assets/images/logo_davivienda.png')}
                 style={styles.headerLogoImage}
                 resizeMode="contain"
               />

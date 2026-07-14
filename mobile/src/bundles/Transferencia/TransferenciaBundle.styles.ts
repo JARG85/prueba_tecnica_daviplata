@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-import { COLORS } from '../styles/theme';
+import { COLORS } from '../../styles/theme';
 
 export const styles = StyleSheet.create({
   headerWelcomeText: {
