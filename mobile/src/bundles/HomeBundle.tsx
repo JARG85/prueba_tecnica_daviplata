@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   SafeAreaView,
   StatusBar,
+  Platform,
 } from 'react-native';
 import { NativeBridge } from '../services/bridge';
 
@@ -98,7 +99,9 @@ const styles = StyleSheet.create({
   },
   header: {
     backgroundColor: '#e50014',
-    padding: 24,
+    paddingTop: Platform.OS === 'android' ? (StatusBar.currentHeight ? StatusBar.currentHeight + 20 : 45) : 20,
+    paddingHorizontal: 24,
+    paddingBottom: 24,
     borderBottomLeftRadius: 16,
     borderBottomRightRadius: 16,
   },

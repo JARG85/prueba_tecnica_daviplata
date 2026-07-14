@@ -8,6 +8,7 @@ import {
   SafeAreaView,
   Alert,
   StatusBar,
+  Platform,
 } from 'react-native';
 import { NativeBridge } from '../services/bridge';
 
@@ -127,7 +128,9 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#f5f5f5',
     justifyContent: 'center',
-    padding: 20,
+    paddingHorizontal: 20,
+    paddingBottom: 20,
+    paddingTop: Platform.OS === 'android' ? (StatusBar.currentHeight ? StatusBar.currentHeight + 20 : 45) : 30,
   },
   card: {
     backgroundColor: '#fff',

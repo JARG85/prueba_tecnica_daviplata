@@ -221,7 +221,7 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     justifyContent: 'center',
     paddingHorizontal: 28,
-    paddingTop: 20,
+    paddingTop: Platform.OS === 'android' ? (StatusBar.currentHeight ? StatusBar.currentHeight + 20 : 45) : 30,
     paddingBottom: 40,
   },
   logoSection: {

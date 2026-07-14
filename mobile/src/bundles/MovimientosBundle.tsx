@@ -7,6 +7,7 @@ import {
   SafeAreaView,
   StatusBar,
   ActivityIndicator,
+  Platform,
 } from 'react-native';
 import { NativeBridge } from '../services/bridge';
 
@@ -167,7 +168,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#f5f5f5',
   },
   header: {
-    padding: 20,
+    paddingTop: Platform.OS === 'android' ? (StatusBar.currentHeight ? StatusBar.currentHeight + 16 : 36) : 20,
+    paddingHorizontal: 20,
+    paddingBottom: 16,
     backgroundColor: '#fff',
     borderBottomWidth: 1,
     borderBottomColor: '#eee',
