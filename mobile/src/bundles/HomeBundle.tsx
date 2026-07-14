@@ -12,7 +12,6 @@ import {
 } from 'react-native';
 import { NativeBridge } from '../services/bridge';
 import { COLORS } from '../styles/theme';
-import { commonStyles } from '../styles/commonStyles';
 
 interface HomeBundleProps {
   name?: string;
@@ -71,7 +70,7 @@ export default function HomeBundle(props: HomeBundleProps) {
     return `$${formattedInteger},${decimalPart}`;
   };
 
-  // Helper to split compound first names like Carlos Alberto, Juan Carlos
+  // Helper to split compound first names
   const getFirstName = (fullName: string) => {
     if (!fullName || fullName === 'Cargando...') return 'Usuario';
     const parts = fullName.split(' ');
@@ -131,27 +130,18 @@ export default function HomeBundle(props: HomeBundleProps) {
   );
 
   return (
-    <SafeAreaView style={commonStyles.container}>
+    <SafeAreaView style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor={COLORS.primary} />
 
-      {/* Top Logo Header (White Bar) */}
-      <View style={styles.topLogoHeader}>
-        <Image
-          source={require('../assets/images/logo_davivienda.png')}
-          style={styles.topLogoImage}
-          resizeMode="contain"
-        />
-      </View>
-
       <ScrollView
-        contentContainerStyle={commonStyles.scrollContainer}
+        contentContainerStyle={styles.scrollContainer}
         showsVerticalScrollIndicator={false}
       >
         {/* Red Banner with Gradient Overlays */}
-        <View style={[commonStyles.headerSection, styles.headerSection]}>
-          <View style={commonStyles.gradientOverlay1} />
-          <View style={commonStyles.gradientOverlay2} />
-          <View style={commonStyles.gradientOverlay3} />
+        <View style={styles.headerSection}>
+          <View style={styles.gradientOverlay1} />
+          <View style={styles.gradientOverlay2} />
+          <View style={styles.gradientOverlay3} />
 
           <View style={styles.headerContentRow}>
             {/* Left Column: Welcome Greeting */}
@@ -175,7 +165,7 @@ export default function HomeBundle(props: HomeBundleProps) {
         </View>
 
         {/* Available Balance Card */}
-        <View style={[commonStyles.card, styles.balanceCard]}>
+        <View style={styles.balanceCard}>
           <Text style={styles.balanceLabel}>Tu Saldo Disponible:</Text>
           <Text style={styles.balanceValue}>{formatCurrency(userData.balance)}</Text>
           <Text style={styles.balanceCurrency}>Pesos Colombianos</Text>
@@ -235,22 +225,53 @@ export default function HomeBundle(props: HomeBundleProps) {
 }
 
 const styles = StyleSheet.create({
-  topLogoHeader: {
-    height: 60,
-    backgroundColor: COLORS.cardBg,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderBottomWidth: 1,
-    borderBottomColor: COLORS.border,
-    paddingTop: Platform.OS === 'ios' ? 10 : 0,
+  container: {
+    flex: 1,
+    backgroundColor: COLORS.bgLight,
   },
-  topLogoImage: {
-    width: 140,
-    height: 32,
+  scrollContainer: {
+    flexGrow: 1,
+    paddingBottom: 100,
   },
   headerSection: {
-    paddingTop: Platform.OS === 'android' ? (StatusBar.currentHeight ? StatusBar.currentHeight + 40 : 65) : 60,
+    backgroundColor: COLORS.primary, // Davivienda red base
+    paddingTop: Platform.OS === 'android' ? (StatusBar.currentHeight ? StatusBar.currentHeight + 60 : 85) : 80,
+    paddingHorizontal: 20,
     paddingBottom: 70,
+    position: 'relative',
+    overflow: 'hidden',
+    borderBottomLeftRadius: 28,
+    borderBottomRightRadius: 28,
+  },
+  gradientOverlay1: {
+    position: 'absolute',
+    top: -80,
+    right: -60,
+    width: 200,
+    height: 200,
+    borderRadius: 100,
+    backgroundColor: COLORS.bgRedGlow,
+    opacity: 0.25,
+  },
+  gradientOverlay2: {
+    position: 'absolute',
+    bottom: -100,
+    left: -80,
+    width: 240,
+    height: 240,
+    borderRadius: 120,
+    backgroundColor: COLORS.bgRedDark,
+    opacity: 0.45,
+  },
+  gradientOverlay3: {
+    position: 'absolute',
+    bottom: -10,
+    right: -20,
+    width: 120,
+    height: 120,
+    borderRadius: 60,
+    backgroundColor: COLORS.bgRedMedium,
+    opacity: 0.4,
   },
   headerContentRow: {
     flexDirection: 'row',
@@ -312,8 +333,25 @@ const styles = StyleSheet.create({
     height: 40,
   },
   balanceCard: {
-    marginTop: -25, // Specifically override marginTop to overlap the red header nicely
+    backgroundColor: COLORS.cardBg,
+    borderRadius: 24,
+    marginHorizontal: 16,
+    marginTop: -25, // Overlaps the red banner
+    paddingVertical: 24,
+    paddingHorizontal: 20,
     alignItems: 'center',
+    ...Platform.select({
+      ios: {
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 8 },
+        shadowOpacity: 0.06,
+        shadowRadius: 12,
+      },
+      android: {
+        elevation: 4,
+      },
+    }),
+    zIndex: 20,
   },
   balanceLabel: {
     fontSize: 14,
@@ -345,11 +383,17 @@ const styles = StyleSheet.create({
     borderRadius: 24,
     paddingVertical: 22,
     alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.05,
-    shadowRadius: 10,
-    elevation: 3,
+    ...Platform.select({
+      ios: {
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 6 },
+        shadowOpacity: 0.05,
+        shadowRadius: 10,
+      },
+      android: {
+        elevation: 3,
+      },
+    }),
   },
   redIconContainer: {
     height: 48,
@@ -435,7 +479,7 @@ const styles = StyleSheet.create({
   },
   logoutContainer: {
     alignSelf: 'center',
-    marginTop: 44,
+    marginTop: 44, // Pushed further down
     marginBottom: 10,
     paddingVertical: 10,
     paddingHorizontal: 28,
