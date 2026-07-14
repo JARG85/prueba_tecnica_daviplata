@@ -136,13 +136,15 @@ export default function HomeBundle(props: HomeBundleProps) {
               <Text style={styles.phoneText}>Datos de contacto: +57 {userData.phone}</Text>
             </View>
 
-            {/* Right Column: Corporate Logo */}
+            {/* Right Column: Corporate Logo in rounded container */}
             <View style={styles.logoCol}>
-              <Image
-                source={require('../assets/images/logo_davivienda.png')}
-                style={styles.headerLogoImageRight}
-                resizeMode="contain"
-              />
+              <View style={styles.logoRoundedBadge}>
+                <Image
+                  source={require('../assets/images/logo_davivienda.png')}
+                  style={styles.headerLogoImageRight}
+                  resizeMode="contain"
+                />
+              </View>
             </View>
           </View>
         </View>
@@ -218,9 +220,9 @@ const styles = StyleSheet.create({
   },
   headerSection: {
     backgroundColor: '#C8102E', // Davivienda red base
-    paddingTop: Platform.OS === 'android' ? (StatusBar.currentHeight ? StatusBar.currentHeight + 20 : 45) : 40,
+    paddingTop: Platform.OS === 'android' ? (StatusBar.currentHeight ? StatusBar.currentHeight + 40 : 65) : 60,
     paddingHorizontal: 20,
-    paddingBottom: 45,
+    paddingBottom: 60,
     position: 'relative',
     overflow: 'hidden',
     borderBottomLeftRadius: 28,
@@ -289,9 +291,31 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  logoRoundedBadge: {
+    width: 82,
+    height: 56,
+    borderRadius: 14,
+    backgroundColor: '#FFFFFF',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 1.5,
+    borderColor: '#FFFFFF',
+    overflow: 'hidden',
+    ...Platform.select({
+      ios: {
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 4,
+      },
+      android: {
+        elevation: 3,
+      },
+    }),
+  },
   headerLogoImageRight: {
-    width: 100,
-    height: 50,
+    width: 68,
+    height: 40,
   },
   balanceCard: {
     backgroundColor: '#FFFFFF',
