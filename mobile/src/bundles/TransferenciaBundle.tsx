@@ -23,6 +23,7 @@ export default function TransferenciaBundle(props: TransferenciaBundleProps) {
   const [destinationPhone, setDestinationPhone] = useState('');
   const [amountStr, setAmountStr] = useState('');
   const [description, setDescription] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat('es-CO', {
@@ -32,7 +33,7 @@ export default function TransferenciaBundle(props: TransferenciaBundleProps) {
     }).format(value);
   };
 
-  const handleTransfer = () => {
+  const handleTransfer = async () => {
     const amount = parseFloat(amountStr);
 
     if (!destinationPhone || !amountStr) {
@@ -60,14 +61,19 @@ export default function TransferenciaBundle(props: TransferenciaBundleProps) {
       return;
     }
 
-    const transferData = {
-      destinationPhone,
-      amount,
-      description: description || 'Transferencia desde DaviPlata',
-    };
-
-    console.log('[TransferenciaBundle] Transferencia exitosa, enviando a Android:', transferData);
-    NativeBridge.sendTransferSuccess(transferData);
+    setLoading(true);
+    try {
+      const msg = await NativeBridge.sendTransfer(
+        destinationPhone,
+        amount,
+        description || 'Transferencia desde DaviPlata'
+      );
+      Alert.alert('Éxito', msg);
+    } catch (error: any) {
+      Alert.alert('Error en Transferencia', error.message || 'Ocurrió un error al procesar el pago.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -104,8 +110,12 @@ export default function TransferenciaBundle(props: TransferenciaBundleProps) {
           onChangeText={setDescription}
         />
 
-        <TouchableOpacity style={styles.button} onPress={handleTransfer}>
-          <Text style={styles.buttonText}>Aceptar</Text>
+        <TouchableOpacity 
+          style={[styles.button, loading && { backgroundColor: '#f5a3a8' }]} 
+          onPress={handleTransfer}
+          disabled={loading}
+        >
+          <Text style={styles.buttonText}>{loading ? 'Procesando...' : 'Aceptar'}</Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>

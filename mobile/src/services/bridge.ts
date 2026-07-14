@@ -16,10 +16,64 @@ export interface TransferData {
   description?: string;
 }
 
+export interface Movement {
+  id: string;
+  date: string;
+  type: 'DEBITO' | 'CREDITO';
+  value: number;
+  description: string;
+  status: string;
+}
+
 /**
  * Service to handle bidirectional communication between Kotlin (Android) and React Native.
  */
 class NativeBridgeService {
+  
+  /**
+   * Performs authentication via the native host layer.
+   * Excludes direct RN fetch.
+   */
+  async login(phone: string, password: string): Promise<boolean> {
+    if (DaviPlataBridge && DaviPlataBridge.login) {
+      return await DaviPlataBridge.login(phone, password);
+    } else {
+      throw new Error('DaviPlataBridge.login no está disponible');
+    }
+  }
+
+  /**
+   * Performs transfer on the Rails backend via the native host layer.
+   */
+  async sendTransfer(destinationPhone: string, amount: number, description: string): Promise<string> {
+    if (DaviPlataBridge && DaviPlataBridge.sendTransfer) {
+      return await DaviPlataBridge.sendTransfer(destinationPhone, amount, description);
+    } else {
+      throw new Error('DaviPlataBridge.sendTransfer no está disponible');
+    }
+  }
+
+  /**
+   * Fetches the user movements from the Rails backend via the native host layer.
+   */
+  async getMovements(): Promise<Movement[]> {
+    if (DaviPlataBridge && DaviPlataBridge.getMovements) {
+      const data = await DaviPlataBridge.getMovements();
+      // Map properties back if they are mapped to local spanish keys in backend
+      // Backend: fecha, tipo, valor, descripcion, estado
+      return data.map((m: any) => ({
+        id: m.id || Math.random().toString(),
+        date: m.fecha || m.date,
+        type: m.tipo || m.type,
+        value: m.valor !== undefined ? m.valor : m.value,
+        description: m.descripcion || m.description,
+        status: m.estado || m.status
+      }));
+    } else {
+      throw new Error('DaviPlataBridge.getMovements no está disponible');
+    }
+  }
+
   sendLoginSuccess(session: SessionData): void {
     if (DaviPlataBridge && DaviPlataBridge.sendLoginSuccess) {
       DaviPlataBridge.sendLoginSuccess(JSON.stringify(session));
@@ -70,3 +124,4 @@ class NativeBridgeService {
 }
 
 export const NativeBridge = new NativeBridgeService();
+

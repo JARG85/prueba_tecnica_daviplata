@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.util.Log
 import com.facebook.react.ReactActivity
 import com.facebook.react.ReactActivityDelegate
+import com.facebook.react.bridge.Arguments
 import com.facebook.react.defaults.DefaultNewArchitectureEntryPoint.fabricEnabled
 import com.facebook.react.defaults.DefaultReactActivityDelegate
 import org.json.JSONObject
@@ -29,6 +30,9 @@ class HomeActivity : ReactActivity() {
                     }
                     launchOptions.putDouble("balance", DataManager.getBalance(this@HomeActivity))
                     Log.d(TAG, "Passing initial props to HomeBundle: $launchOptions")
+                    
+                    // Trigger background refresh of balance from the server
+                    refreshBalanceInBackground()
                 } catch (e: Exception) {
                     Log.e(TAG, "Error generating launch options for HomeBundle", e)
                 }
@@ -36,4 +40,32 @@ class HomeActivity : ReactActivity() {
             }
         }
     }
+
+    private fun refreshBalanceInBackground() {
+        Thread {
+            try {
+                val sessionJson = SecurityManager.getSession(this) ?: return@Thread
+                val sessionObj = JSONObject(sessionJson)
+                val userId = sessionObj.getString("userId")
+                
+                // Fetch fresh balance from Rails API
+                val freshBalance = ApiService.getBalance(userId)
+                DataManager.updateBalance(this, freshBalance)
+                
+                // Prepare arguments to notify React Native
+                val params = Arguments.createMap().apply {
+                    putString("name", sessionObj.optString("name", "Usuario"))
+                    putString("phone", sessionObj.optString("phone", ""))
+                    putDouble("balance", freshBalance)
+                }
+                
+                // Emit event through the bridge
+                DaviPlataBridge.sendEvent("LOAD_HOME", params)
+                Log.d(TAG, "Successfully refreshed balance in background from API: $freshBalance")
+            } catch (e: Exception) {
+                Log.e(TAG, "Failed to refresh balance in background", e)
+            }
+        }.start()
+    }
 }
+

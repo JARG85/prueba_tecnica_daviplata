@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   StyleSheet,
   Text,
@@ -6,7 +6,9 @@ import {
   FlatList,
   SafeAreaView,
   StatusBar,
+  ActivityIndicator,
 } from 'react-native';
+import { NativeBridge } from '../services/bridge';
 
 export interface Movement {
   id: string;
@@ -57,7 +59,28 @@ const mockMovements: Movement[] = [
 ];
 
 export default function MovimientosBundle(props: MovimientosBundleProps) {
-  const movements = props.movements || mockMovements;
+  const [movements, setMovements] = useState<Movement[]>(props.movements || []);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchMovements = async () => {
+      try {
+        const data = await NativeBridge.getMovements();
+        setMovements(data);
+      } catch (error) {
+        console.error('Error fetching movements:', error);
+        if (props.movements) {
+          setMovements(props.movements);
+        } else {
+          setMovements(mockMovements);
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchMovements();
+  }, [props.movements]);
 
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat('es-CO', {
@@ -117,7 +140,12 @@ export default function MovimientosBundle(props: MovimientosBundleProps) {
         <Text style={styles.subtitle}>Historial reciente de transacciones</Text>
       </View>
 
-      {movements.length === 0 ? (
+      {loading ? (
+        <View style={styles.emptyContainer}>
+          <ActivityIndicator size="large" color="#e50014" />
+          <Text style={[styles.emptyText, { marginTop: 12 }]}>Cargando tus movimientos...</Text>
+        </View>
+      ) : movements.length === 0 ? (
         <View style={styles.emptyContainer}>
           <Text style={styles.emptyText}>No tienes movimientos registrados.</Text>
         </View>

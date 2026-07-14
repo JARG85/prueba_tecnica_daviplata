@@ -20,12 +20,13 @@ export default function LoginBundle() {
   const [name, setName] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const [isNameFocused, setIsNameFocused] = useState(false);
   const [isPhoneFocused, setIsPhoneFocused] = useState(false);
   const [isPasswordFocused, setIsPasswordFocused] = useState(false);
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     if (!phone || !password) {
       Alert.alert('Error', 'Todos los campos son obligatorios.');
       return;
@@ -36,24 +37,22 @@ export default function LoginBundle() {
       return;
     }
 
-    if (password.length !== 4) {
-      Alert.alert('Error', 'La clave debe tener 4 dígitos.');
+    if (password.length < 4) {
+      Alert.alert('Error', 'La clave debe tener al menos 4 caracteres.');
       return;
     }
 
-    const sessionData = {
-      sessionId: Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15),
-      userId: '12345',
-      name: name.trim() || 'Usuario DaviPlata',
-      phone: phone,
-      expiresAt: new Date(Date.now() + 5 * 60 * 1000).toISOString(), // Expira en 5 minutos
-    };
-
-    console.log('[LoginBundle] Login exitoso, enviando a Android:', sessionData);
-    NativeBridge.sendLoginSuccess(sessionData);
+    setLoading(true);
+    try {
+      await NativeBridge.login(phone, password);
+    } catch (error: any) {
+      Alert.alert('Ingreso Fallido', error.message || 'Credenciales inválidas o error de conexión');
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const isFormValid = phone.length === 10 && password.length === 4;
+  const isFormValid = phone.length === 10 && password.length >= 4;
 
   const DaviviendaLogo = () => (
     <View style={styles.logoContainer}>
@@ -77,7 +76,7 @@ export default function LoginBundle() {
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
       <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
         style={styles.keyboardView}
       >
         <ScrollView
@@ -135,7 +134,7 @@ export default function LoginBundle() {
             </View>
 
             {/* Password (Clave) Input */}
-            <Text style={styles.inputLabel}>Clave DaviPlata (4 dígitos)</Text>
+            <Text style={styles.inputLabel}>Clave DaviPlata / Contraseña</Text>
             <View style={[styles.inputWrapper, isPasswordFocused && styles.inputWrapperFocused]}>
               <Text style={styles.inputIcon}>🔑</Text>
               <TextInput
@@ -143,8 +142,8 @@ export default function LoginBundle() {
                 placeholder="Clave de ingreso"
                 placeholderTextColor="#A0AEC0"
                 secureTextEntry={!showPassword}
-                keyboardType="number-pad"
-                maxLength={4}
+                keyboardType="default"
+                maxLength={32}
                 value={password}
                 onChangeText={setPassword}
                 onFocus={() => setIsPasswordFocused(true)}
@@ -178,12 +177,12 @@ export default function LoginBundle() {
 
             {/* Submit Button */}
             <TouchableOpacity
-              style={[styles.loginButton, !isFormValid && styles.loginButtonDisabled]}
+              style={[styles.loginButton, (!isFormValid || loading) && styles.loginButtonDisabled]}
               onPress={handleLogin}
-              disabled={!isFormValid}
+              disabled={!isFormValid || loading}
               activeOpacity={0.8}
             >
-              <Text style={styles.loginButtonText}>Ingresar</Text>
+              <Text style={styles.loginButtonText}>{loading ? 'Ingresando...' : 'Ingresar'}</Text>
             </TouchableOpacity>
 
             {/* Additional Links */}
@@ -326,9 +325,6 @@ const styles = StyleSheet.create({
         shadowOffset: { width: 0, height: 3 },
         shadowOpacity: 0.1,
         shadowRadius: 5,
-      },
-      android: {
-        elevation: 3,
       },
     }),
   },
