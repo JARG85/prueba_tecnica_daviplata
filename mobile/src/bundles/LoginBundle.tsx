@@ -12,6 +12,7 @@ import {
   Platform,
   ScrollView,
   Image,
+  Linking,
 } from 'react-native';
 import { NativeBridge } from '../services/bridge';
 
@@ -51,22 +52,25 @@ export default function LoginBundle() {
     }
   };
 
+  const handleRegisterRedirect = () => {
+    Linking.openURL('https://www.davivienda.com').catch((err) =>
+      console.error('Error opening URL:', err)
+    );
+  };
+
   const isFormValid = phone.length === 10 && password.length >= 4;
 
-  const CircularLogo = () => (
-    <View style={styles.circularLogoContainer}>
-      <View style={styles.houseIconContainer}>
-        {/* Roof (White Triangle) */}
-        <View style={styles.roofWhite} />
-        {/* Body (White Square) */}
-        <View style={styles.bodyWhite}>
-          {/* Door (Red Rectangle, matches red background) */}
-          <View style={styles.doorRed} />
-          {/* Left/Right window details to match Davivienda Casita icon */}
-          <View style={styles.windowRedLeft} />
-          <View style={styles.windowRedRight} />
-        </View>
-      </View>
+  // Custom Minimalist Gray Icons using simple styled Views
+  const PhoneIcon = () => (
+    <View style={styles.phoneIconOuter}>
+      <View style={styles.phoneIconDot} />
+    </View>
+  );
+
+  const LockIcon = () => (
+    <View style={styles.lockIconOuter}>
+      <View style={styles.lockIconShackle} />
+      <View style={styles.lockIconBody} />
     </View>
   );
 
@@ -84,27 +88,24 @@ export default function LoginBundle() {
         >
           {/* Red Header Section */}
           <View style={styles.headerSection}>
-            <CircularLogo />
+            <Image
+              source={require('../assets/images/logo_davivienda.png')}
+              style={styles.headerLogoImage}
+              resizeMode="contain"
+            />
             <Text style={styles.welcomeText}>¡BIENVENIDO</Text>
             <Text style={styles.welcomeText}>A DAVIVIENDA!</Text>
           </View>
 
           {/* White Login Card (Overlapping) */}
           <View style={styles.card}>
-            {/* Optional Corporate Logo placed neatly inside card */}
-            <View style={styles.corporateLogoContainer}>
-              <Image
-                source={require('../assets/images/logo_davivienda.png')}
-                style={styles.corporateLogo}
-                resizeMode="contain"
-              />
-            </View>
-
             {/* Form Section */}
             <View style={styles.formSection}>
               {/* Phone Input (Pill Shaped) */}
               <View style={[styles.inputWrapper, isPhoneFocused && styles.inputWrapperFocused]}>
-                <Text style={styles.inputIcon}>✉️</Text>
+                <View style={styles.iconContainer}>
+                  <PhoneIcon />
+                </View>
                 <TextInput
                   style={styles.textInput}
                   placeholder="Número de celular"
@@ -120,7 +121,9 @@ export default function LoginBundle() {
 
               {/* Password Input (Pill Shaped) */}
               <View style={[styles.inputWrapper, isPasswordFocused && styles.inputWrapperFocused]}>
-                <Text style={styles.inputIcon}>🔑</Text>
+                <View style={styles.iconContainer}>
+                  <LockIcon />
+                </View>
                 <TextInput
                   style={styles.textInput}
                   placeholder="Clave"
@@ -147,7 +150,7 @@ export default function LoginBundle() {
                 <Text style={styles.forgotPasswordText}>¿Olvidó su clave?</Text>
               </TouchableOpacity>
 
-              {/* Submit Button (Pill Shaped with gradient-like background color) */}
+              {/* Submit Button (Pill Shaped) */}
               <TouchableOpacity
                 style={[styles.loginButton, (!isFormValid || loading) && styles.loginButtonDisabled]}
                 onPress={handleLogin}
@@ -162,7 +165,7 @@ export default function LoginBundle() {
               {/* Register Link */}
               <View style={styles.registerContainer}>
                 <Text style={styles.registerText}>¿No tiene cuenta? </Text>
-                <TouchableOpacity activeOpacity={0.7}>
+                <TouchableOpacity onPress={handleRegisterRedirect} activeOpacity={0.7}>
                   <Text style={styles.registerLink}>[Regístrese aquí]</Text>
                 </TouchableOpacity>
               </View>
@@ -170,11 +173,6 @@ export default function LoginBundle() {
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
-
-      {/* Floating Action Arrow Button (Bottom Right) */}
-      <TouchableOpacity style={styles.floatingActionButton} activeOpacity={0.8}>
-        <Text style={styles.floatingActionText}>›</Text>
-      </TouchableOpacity>
     </SafeAreaView>
   );
 }
@@ -199,62 +197,10 @@ const styles = StyleSheet.create({
     paddingTop: Platform.OS === 'android' ? (StatusBar.currentHeight ? StatusBar.currentHeight + 10 : 35) : 30,
     paddingBottom: 50,
   },
-  circularLogoContainer: {
-    width: 96,
-    height: 96,
-    borderRadius: 48,
-    borderWidth: 2,
-    borderColor: '#FFFFFF',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 20,
-    backgroundColor: 'transparent',
-  },
-  houseIconContainer: {
-    alignItems: 'center',
-  },
-  roofWhite: {
-    width: 0,
-    height: 0,
-    backgroundColor: 'transparent',
-    borderStyle: 'solid',
-    borderLeftWidth: 20,
-    borderRightWidth: 20,
-    borderBottomWidth: 15,
-    borderLeftColor: 'transparent',
-    borderRightColor: 'transparent',
-    borderBottomColor: '#FFFFFF',
-  },
-  bodyWhite: {
-    width: 28,
-    height: 20,
-    backgroundColor: '#FFFFFF',
-    position: 'relative',
-    marginTop: -1,
-  },
-  doorRed: {
-    width: 8,
-    height: 12,
-    backgroundColor: '#C8102E', // Matches header red background
-    position: 'absolute',
-    bottom: 0,
-    left: 10, // Centered: (28 - 8)/2 = 10
-  },
-  windowRedLeft: {
-    width: 4,
-    height: 4,
-    backgroundColor: '#C8102E',
-    position: 'absolute',
-    top: 3,
-    left: 3,
-  },
-  windowRedRight: {
-    width: 4,
-    height: 4,
-    backgroundColor: '#C8102E',
-    position: 'absolute',
-    top: 3,
-    right: 3,
+  headerLogoImage: {
+    width: 220,
+    height: 90,
+    marginBottom: 10,
   },
   welcomeText: {
     fontSize: 28,
@@ -269,20 +215,12 @@ const styles = StyleSheet.create({
     marginHorizontal: 16,
     marginTop: -45, // Overlaps the red header
     paddingHorizontal: 24,
-    paddingVertical: 32,
+    paddingVertical: 36,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 10 },
     shadowOpacity: 0.08,
     shadowRadius: 16,
     elevation: 6,
-  },
-  corporateLogoContainer: {
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  corporateLogo: {
-    width: 140,
-    height: 40,
   },
   formSection: {
     width: '100%',
@@ -301,9 +239,50 @@ const styles = StyleSheet.create({
     borderWidth: 1.5,
     borderColor: '#C8102E',
   },
-  inputIcon: {
-    fontSize: 20,
+  iconContainer: {
     marginRight: 12,
+    width: 24,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  phoneIconOuter: {
+    width: 14,
+    height: 24,
+    borderRadius: 3,
+    borderWidth: 1.8,
+    borderColor: '#718096',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    paddingBottom: 3,
+  },
+  phoneIconDot: {
+    width: 3,
+    height: 3,
+    borderRadius: 1.5,
+    backgroundColor: '#718096',
+  },
+  lockIconOuter: {
+    width: 18,
+    height: 22,
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+  },
+  lockIconShackle: {
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+    borderWidth: 1.8,
+    borderColor: '#718096',
+    borderBottomWidth: 0,
+    marginBottom: -2,
+  },
+  lockIconBody: {
+    width: 16,
+    height: 11,
+    borderRadius: 2,
+    borderWidth: 1.8,
+    borderColor: '#718096',
+    backgroundColor: 'transparent',
   },
   textInput: {
     flex: 1,
@@ -368,28 +347,5 @@ const styles = StyleSheet.create({
     color: '#C8102E',
     fontSize: 14,
     fontWeight: 'bold',
-  },
-  floatingActionButton: {
-    position: 'absolute',
-    bottom: 24,
-    right: 24,
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    backgroundColor: '#C8102E',
-    justifyContent: 'center',
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.15,
-    shadowRadius: 6,
-    elevation: 5,
-  },
-  floatingActionText: {
-    color: '#FFFFFF',
-    fontSize: 26,
-    fontWeight: 'bold',
-    lineHeight: 30,
-    textAlign: 'center',
   },
 });
