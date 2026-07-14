@@ -14,25 +14,42 @@ jest.mock('../src/services/bridge', () => ({
 describe('HomeBundle', () => {
   it('renders welcome name and formatted balance', async () => {
     let component: ReactTestRenderer.ReactTestRenderer;
-    await ReactTestRenderer.act(() => {
+    
+    await ReactTestRenderer.act(async () => {
       component = ReactTestRenderer.create(
         <HomeBundle name="Juan Carlos Perez" phone="3007654321" balance={75000} />
       );
     });
 
+    // Wait for useEffect fetchBalance to resolve and update state
+    await ReactTestRenderer.act(async () => {
+      await Promise.resolve();
+    });
+
     const instance = component!.root;
 
-    // Verify first name greeting (Carlos Alberto, Juan Carlos helper splits compound names)
-    // Here "Juan Carlos Perez" splits: "Juan Carlos" is expected
-    const greetingText = instance.findByProps({ children: 'Juan Carlos!' });
+    // Retrieve all Text components and helper to join children (in case of template variables)
+    const texts = instance.findAllByType('Text');
+    
+    const findText = (query: string) => {
+      return texts.find(t => {
+        const textContent = Array.isArray(t.props.children)
+          ? t.props.children.join('')
+          : String(t.props.children || '');
+        return textContent.includes(query);
+      });
+    };
+
+    // Verify first name greeting (e.g. "Juan Carlos!")
+    const greetingText = findText('Juan Carlos!');
     expect(greetingText).toBeTruthy();
 
     // Verify phone format
-    const phoneText = instance.findByProps({ children: '+57 3007654321' });
+    const phoneText = findText('+57 3007654321');
     expect(phoneText).toBeTruthy();
 
-    // Verify initial balance rendering format
-    const balanceValueText = instance.findByProps({ children: '$75.000,00' });
+    // Verify balance rendering format
+    const balanceValueText = findText('$75.000,00');
     expect(balanceValueText).toBeTruthy();
   });
 });
