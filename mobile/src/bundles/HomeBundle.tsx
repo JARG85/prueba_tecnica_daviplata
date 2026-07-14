@@ -66,25 +66,6 @@ export default function HomeBundle(props: HomeBundleProps) {
     return parts[0];
   };
 
-  // Custom Vector Mascot Drawing using standard Views
-  const MascotAvatar = () => (
-    <View style={styles.mascotContainer}>
-      <View style={styles.mascotRoof} />
-      <View style={styles.mascotFace}>
-        <View style={styles.mascotEyesRow}>
-          <View style={styles.mascotEye}>
-            <View style={styles.mascotPupil} />
-          </View>
-          <View style={styles.mascotEye}>
-            <View style={styles.mascotPupil} />
-          </View>
-        </View>
-        <View style={styles.mascotNose} />
-        <View style={styles.mascotMouth} />
-      </View>
-    </View>
-  );
-
   // Custom Vector Icons for Buttons
   const TransferIcon = () => (
     <View style={styles.redIconContainer}>
@@ -135,22 +116,13 @@ export default function HomeBundle(props: HomeBundleProps) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
-
-      {/* Top Logo Header (White Bar) */}
-      <View style={styles.topLogoHeader}>
-        <Image
-          source={require('../assets/images/logo_davivienda.png')}
-          style={styles.topLogoImage}
-          resizeMode="contain"
-        />
-      </View>
+      <StatusBar barStyle="light-content" backgroundColor="#C8102E" />
 
       <ScrollView
         contentContainerStyle={styles.scrollContainer}
         showsVerticalScrollIndicator={false}
       >
-        {/* Red Banner with Gradient Overlays */}
+        {/* Red Banner with Gradient Overlays (Extends to top of screen) */}
         <View style={styles.headerSection}>
           <View style={styles.gradientOverlay1} />
           <View style={styles.gradientOverlay2} />
@@ -164,9 +136,13 @@ export default function HomeBundle(props: HomeBundleProps) {
               <Text style={styles.phoneText}>Datos de contacto: +57 {userData.phone}</Text>
             </View>
 
-            {/* Right Column: Mascot Avatar */}
-            <View style={styles.mascotCol}>
-              <MascotAvatar />
+            {/* Right Column: Corporate Logo */}
+            <View style={styles.logoCol}>
+              <Image
+                source={require('../assets/images/logo_davivienda.png')}
+                style={styles.headerLogoImageRight}
+                resizeMode="contain"
+              />
             </View>
           </View>
         </View>
@@ -203,7 +179,7 @@ export default function HomeBundle(props: HomeBundleProps) {
           </TouchableOpacity>
         </View>
 
-        {/* Cerrar Sesion Link */}
+        {/* Cerrar Sesion Outline Button */}
         <TouchableOpacity
           style={styles.logoutContainer}
           onPress={() => NativeBridge.sendLogout()}
@@ -236,27 +212,15 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#F3F4F6',
   },
-  topLogoHeader: {
-    height: 60,
-    backgroundColor: '#FFFFFF',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderBottomWidth: 1,
-    borderBottomColor: '#E2E8F0',
-    paddingTop: Platform.OS === 'ios' ? 10 : 0,
-  },
-  topLogoImage: {
-    width: 140,
-    height: 32,
-  },
   scrollContainer: {
     flexGrow: 1,
-    paddingBottom: 80,
+    paddingBottom: 100,
   },
   headerSection: {
     backgroundColor: '#C8102E', // Davivienda red base
+    paddingTop: Platform.OS === 'android' ? (StatusBar.currentHeight ? StatusBar.currentHeight + 20 : 45) : 40,
     paddingHorizontal: 20,
-    paddingVertical: 26,
+    paddingBottom: 45,
     position: 'relative',
     overflow: 'hidden',
     borderBottomLeftRadius: 28,
@@ -320,81 +284,14 @@ const styles = StyleSheet.create({
     color: '#FEE2E2',
     opacity: 0.9,
   },
-  mascotCol: {
-    width: 80,
+  logoCol: {
+    width: 100,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  mascotContainer: {
-    width: 70,
-    height: 75,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  mascotRoof: {
-    width: 0,
-    height: 0,
-    backgroundColor: 'transparent',
-    borderStyle: 'solid',
-    borderLeftWidth: 32,
-    borderRightWidth: 32,
-    borderBottomWidth: 18,
-    borderLeftColor: 'transparent',
-    borderRightColor: 'transparent',
-    borderBottomColor: '#F59E0B',
-  },
-  mascotFace: {
-    width: 48,
-    height: 38,
-    borderRadius: 19,
-    backgroundColor: '#DC2626',
-    borderWidth: 1.5,
-    borderColor: '#7F1D1D',
-    position: 'relative',
-    marginTop: -2,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  mascotEyesRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    width: 24,
-    marginTop: 2,
-  },
-  mascotEye: {
-    width: 9,
-    height: 9,
-    borderRadius: 4.5,
-    backgroundColor: '#FFFFFF',
-    borderWidth: 1,
-    borderColor: '#000000',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  mascotPupil: {
-    width: 4,
-    height: 4,
-    borderRadius: 2,
-    backgroundColor: '#059669',
-  },
-  mascotNose: {
-    width: 8,
-    height: 10,
-    borderRadius: 4,
-    backgroundColor: '#F59E0B',
-    borderWidth: 1,
-    borderColor: '#7F1D1D',
-    marginTop: -1,
-  },
-  mascotMouth: {
-    width: 18,
-    height: 5,
-    borderBottomLeftRadius: 9,
-    borderBottomRightRadius: 9,
-    backgroundColor: '#EA580C',
-    borderWidth: 1,
-    borderColor: '#7F1D1D',
-    marginTop: -1,
+  headerLogoImageRight: {
+    width: 100,
+    height: 50,
   },
   balanceCard: {
     backgroundColor: '#FFFFFF',
@@ -531,14 +428,21 @@ const styles = StyleSheet.create({
   },
   logoutContainer: {
     alignSelf: 'center',
-    marginTop: 32,
-    paddingVertical: 8,
-    paddingHorizontal: 20,
+    marginTop: 44, // Pushed further down
+    marginBottom: 10,
+    paddingVertical: 10,
+    paddingHorizontal: 28,
+    borderWidth: 1.5,
+    borderColor: '#C8102E',
+    borderRadius: 22,
+    backgroundColor: 'transparent',
   },
   logoutText: {
     color: '#C8102E',
-    fontSize: 15,
+    fontSize: 14,
     fontWeight: '700',
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
   },
   bottomTabBar: {
     position: 'absolute',
