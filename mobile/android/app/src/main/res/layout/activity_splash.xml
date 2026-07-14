@@ -2,73 +2,15 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF">
+    android:background="@color/davivienda_red">
 
-    <!-- Center container for Logo + Title -->
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <!-- Davivienda House Logo (outline style, matching current Davivienda app splash) -->
+    <ImageView
+        android:id="@+id/splash_logo"
+        android:layout_width="132dp"
+        android:layout_height="110dp"
         android:layout_centerInParent="true"
-        android:orientation="vertical"
-        android:gravity="center">
-
-        <!-- Davivienda House Logo -->
-        <ImageView
-            android:id="@+id/splash_logo"
-            android:layout_width="120dp"
-            android:layout_height="100dp"
-            android:src="@drawable/ic_daviplata_house"
-            android:contentDescription="Davivienda Logo" />
-
-        <!-- Logo Text -->
-        <LinearLayout
-            android:id="@+id/splash_text_container"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="16dp"
-            android:gravity="bottom">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="davi"
-                android:textColor="#4A5568"
-                android:textSize="32sp"
-                android:textStyle="bold"
-                android:fontFamily="sans-serif-condensed" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="plata"
-                android:textColor="#E50014"
-                android:textSize="32sp"
-                android:textStyle="bold"
-                android:fontFamily="sans-serif-condensed" />
-        </LinearLayout>
-        
-        <!-- Loading indicator -->
-        <ProgressBar
-            android:layout_width="28dp"
-            android:layout_height="28dp"
-            android:layout_marginTop="32dp"
-            android:indeterminateTint="#E50014"
-            style="?android:attr/progressBarStyleSmall" />
-            
-    </LinearLayout>
-
-    <!-- Footer Security Text -->
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="30dp"
-        android:text="VIGILADO SUPERINTENDENCIA FINANCIERA DE COLOMBIA"
-        android:textColor="#A0AEC0"
-        android:textSize="10sp"
-        android:letterSpacing="0.05"
-        android:fontFamily="sans-serif" />
+        android:src="@drawable/ic_davivienda_house_outline"
+        android:contentDescription="Davivienda Logo" />
 
 </RelativeLayout>

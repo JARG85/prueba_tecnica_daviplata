@@ -7,7 +7,6 @@ import android.os.Looper
 import android.util.Log
 import android.view.animation.DecelerateInterpolator
 import android.widget.ImageView
-import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import org.json.JSONObject
 import java.text.SimpleDateFormat
@@ -28,7 +27,6 @@ class SplashActivity : AppCompatActivity() {
 
         // Find views for animation
         val splashLogo = findViewById<ImageView>(R.id.splash_logo)
-        val textContainer = findViewById<LinearLayout>(R.id.splash_text_container)
 
         // Perform fade-in & scale animation for the Davivienda Logo
         splashLogo?.apply {
@@ -39,19 +37,6 @@ class SplashActivity : AppCompatActivity() {
                 .alpha(1f)
                 .scaleX(1f)
                 .scaleY(1f)
-                .setDuration(800)
-                .setInterpolator(DecelerateInterpolator())
-                .start()
-        }
-
-        // Perform delayed fade-in for the text logo container
-        textContainer?.apply {
-            alpha = 0f
-            translationY = 20f
-            animate()
-                .alpha(1f)
-                .translationY(0f)
-                .setStartDelay(200)
                 .setDuration(800)
                 .setInterpolator(DecelerateInterpolator())
                 .start()

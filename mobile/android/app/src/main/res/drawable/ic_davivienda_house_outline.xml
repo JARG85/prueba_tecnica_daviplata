@@ -1,0 +1,33 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="132dp"
+    android:height="110dp"
+    android:viewportWidth="120"
+    android:viewportHeight="100">
+    <!-- Rounded, hand-drawn style house outline used on the Davivienda splash -->
+    <path
+        android:pathData="M 14,46
+            C 16,34 26,22 38,14
+            C 46,9 50,6 56,6
+            C 62,6 66,10 72,16
+            C 75,19 77,23 80,28
+            L 80,8
+            C 80,5 82,3 85,3
+            L 93,3
+            C 96,3 98,5 98,8
+            L 98,28
+            C 102,32 106,38 110,46
+            C 116,54 118,60 116,66
+            C 114,74 111,80 108,86
+            C 100,90 92,93 84,92
+            C 76,91 68,94 60,96
+            C 52,98 44,94 36,92
+            C 26,90 16,88 12,84
+            C 8,80 6,72 6,64
+            C 6,56 10,50 14,46
+            Z"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="5.5"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:fillColor="#00000000" />
+</vector>
