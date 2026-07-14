@@ -114,6 +114,14 @@ class NativeBridgeService {
     }
   }
 
+  closeActivity(): void {
+    if (DaviPlataBridge && DaviPlataBridge.closeActivity) {
+      DaviPlataBridge.closeActivity();
+    } else {
+      console.warn('DaviPlataBridge.closeActivity not available');
+    }
+  }
+
   onLoadHome(callback: (data: any) => void): EmitterSubscription {
     return DeviceEventEmitter.addListener('LOAD_HOME', callback);
   }

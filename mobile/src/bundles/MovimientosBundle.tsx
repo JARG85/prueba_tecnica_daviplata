@@ -8,6 +8,7 @@ import {
   StatusBar,
   ActivityIndicator,
   Platform,
+  TouchableOpacity,
 } from 'react-native';
 import { NativeBridge } from '../services/bridge';
 
@@ -20,75 +21,32 @@ export interface Movement {
   status: string;
 }
 
-interface MovimientosBundleProps {
-  movements?: Movement[];
-}
-
-const mockMovements: Movement[] = [
-  {
-    id: '1',
-    date: '2026-07-13T10:15:30Z',
-    type: 'DEBITO',
-    value: 15000,
-    description: 'Pago tienda de barrio',
-    status: 'Exitosa',
-  },
-  {
-    id: '2',
-    date: '2026-07-12T18:45:00Z',
-    type: 'CREDITO',
-    value: 50000,
-    description: 'Transferencia recibida de 3102223344',
-    status: 'Exitosa',
-  },
-  {
-    id: '3',
-    date: '2026-07-10T14:30:00Z',
-    type: 'DEBITO',
-    value: 20000,
-    description: 'Recarga celular',
-    status: 'Exitosa',
-  },
-  {
-    id: '4',
-    date: '2026-07-09T09:00:00Z',
-    type: 'CREDITO',
-    value: 120000,
-    description: 'Carga de DaviPlata',
-    status: 'Exitosa',
-  },
-];
-
-export default function MovimientosBundle(props: MovimientosBundleProps) {
-  const [movements, setMovements] = useState<Movement[]>(props.movements || []);
+export default function MovimientosBundle() {
+  const [movements, setMovements] = useState<Movement[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchMovements = async () => {
       try {
         const data = await NativeBridge.getMovements();
+        console.log('[MovimientosBundle] Movimientos recibidos:', data);
         setMovements(data);
       } catch (error) {
-        console.error('Error fetching movements:', error);
-        if (props.movements) {
-          setMovements(props.movements);
-        } else {
-          setMovements(mockMovements);
-        }
+        console.error('[MovimientosBundle] Error al obtener movimientos:', error);
       } finally {
         setLoading(false);
       }
     };
 
     fetchMovements();
-  }, [props.movements]);
+  }, []);
 
+  // Colombian Peso formatting: $1.450.000,00
   const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat('es-CO', {
-      style: 'currency',
-      currency: 'COP',
-      minimumFractionDigits: 0,
-    }).format(value);
+    const fixedValue = value.toFixed(2);
+    const [integerPart, decimalPart] = fixedValue.split('.');
+    const formattedInteger = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    return `$${formattedInteger},${decimalPart}`;
   };
 
   const formatDate = (isoString: string) => {
@@ -111,13 +69,25 @@ export default function MovimientosBundle(props: MovimientosBundleProps) {
 
     return (
       <View style={styles.movementItem}>
+        {/* Left Column: Transaction Indicator Circle and Details */}
         <View style={styles.leftCol}>
-          <Text style={styles.description}>{item.description}</Text>
-          <Text style={styles.date}>{formatDate(item.date)}</Text>
-          <View style={styles.statusBadge}>
-            <Text style={styles.statusText}>{item.status}</Text>
+          <View style={[styles.indicatorCircle, isDebito ? styles.debitoCircle : styles.creditoCircle]}>
+            <Text style={[styles.indicatorArrow, isDebito ? styles.debitoArrowColor : styles.creditoArrowColor]}>
+              {isDebito ? '↗' : '↙'}
+            </Text>
+          </View>
+          <View style={styles.detailsCol}>
+            <Text style={styles.description} numberOfLines={2}>{item.description}</Text>
+            <Text style={styles.date}>{formatDate(item.date)}</Text>
+            <View style={[styles.statusBadge, item.status === 'Exitosa' ? styles.statusSuccess : styles.statusPending]}>
+              <Text style={[styles.statusText, item.status === 'Exitosa' ? styles.statusTextSuccess : styles.statusTextPending]}>
+                {item.status}
+              </Text>
+            </View>
           </View>
         </View>
+
+        {/* Right Column: Transaction Value and Type */}
         <View style={styles.rightCol}>
           <Text
             style={[
@@ -135,29 +105,49 @@ export default function MovimientosBundle(props: MovimientosBundleProps) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="dark-content" backgroundColor="#f5f5f5" />
-      <View style={styles.header}>
-        <Text style={styles.title}>Mis Movimientos</Text>
-        <Text style={styles.subtitle}>Historial reciente de transacciones</Text>
+      <StatusBar barStyle="light-content" backgroundColor="#C8102E" />
+
+      {/* Red Header Section with Gradient Overlays */}
+      <View style={styles.headerSection}>
+        <View style={styles.gradientOverlay1} />
+        <View style={styles.gradientOverlay2} />
+        <View style={styles.gradientOverlay3} />
+
+        {/* Back Button */}
+        <TouchableOpacity
+          style={styles.backButton}
+          onPress={() => NativeBridge.closeActivity()}
+          activeOpacity={0.7}
+        >
+          <Text style={styles.backButtonText}>← Volver</Text>
+        </TouchableOpacity>
+
+        <Text style={styles.welcomeText}>Mis Movimientos</Text>
+        <Text style={styles.balanceText}>Historial reciente de transacciones</Text>
       </View>
 
-      {loading ? (
-        <View style={styles.emptyContainer}>
-          <ActivityIndicator size="large" color="#e50014" />
-          <Text style={[styles.emptyText, { marginTop: 12 }]}>Cargando tus movimientos...</Text>
-        </View>
-      ) : movements.length === 0 ? (
-        <View style={styles.emptyContainer}>
-          <Text style={styles.emptyText}>No tienes movimientos registrados.</Text>
-        </View>
-      ) : (
-        <FlatList
-          data={movements}
-          keyExtractor={(item) => item.id}
-          renderItem={renderItem}
-          contentContainerStyle={styles.listContainer}
-        />
-      )}
+      {/* Overlapping White List Container */}
+      <View style={styles.card}>
+        {loading ? (
+          <View style={styles.emptyContainer}>
+            <ActivityIndicator size="large" color="#C8102E" />
+            <Text style={[styles.emptyText, { marginTop: 12 }]}>Cargando tus movimientos...</Text>
+          </View>
+        ) : movements.length === 0 ? (
+          <View style={styles.emptyContainer}>
+            <Text style={styles.emptyIcon}>📋</Text>
+            <Text style={styles.emptyText}>No tienes movimientos registrados.</Text>
+          </View>
+        ) : (
+          <FlatList
+            data={movements}
+            keyExtractor={(item) => item.id}
+            renderItem={renderItem}
+            contentContainerStyle={styles.listContainer}
+            showsVerticalScrollIndicator={false}
+          />
+        )}
+      </View>
     </SafeAreaView>
   );
 }
@@ -165,98 +155,208 @@ export default function MovimientosBundle(props: MovimientosBundleProps) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#F3F4F6',
   },
-  header: {
-    paddingTop: Platform.OS === 'android' ? (StatusBar.currentHeight ? StatusBar.currentHeight + 16 : 36) : 20,
+  headerSection: {
+    backgroundColor: '#C8102E', // Davivienda red base
+    paddingTop: Platform.OS === 'android' ? (StatusBar.currentHeight ? StatusBar.currentHeight + 30 : 55) : 50,
     paddingHorizontal: 20,
-    paddingBottom: 16,
-    backgroundColor: '#fff',
-    borderBottomWidth: 1,
-    borderBottomColor: '#eee',
+    paddingBottom: 55,
+    position: 'relative',
+    overflow: 'hidden',
+    borderBottomLeftRadius: 28,
+    borderBottomRightRadius: 28,
   },
-  title: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    color: '#333',
+  gradientOverlay1: {
+    position: 'absolute',
+    top: -80,
+    right: -60,
+    width: 200,
+    height: 200,
+    borderRadius: 100,
+    backgroundColor: '#E53E3E',
+    opacity: 0.25,
   },
-  subtitle: {
-    fontSize: 14,
-    color: '#666',
-    marginTop: 4,
+  gradientOverlay2: {
+    position: 'absolute',
+    bottom: -100,
+    left: -80,
+    width: 240,
+    height: 240,
+    borderRadius: 120,
+    backgroundColor: '#7A091A',
+    opacity: 0.45,
+  },
+  gradientOverlay3: {
+    position: 'absolute',
+    bottom: -10,
+    right: -20,
+    width: 120,
+    height: 120,
+    borderRadius: 60,
+    backgroundColor: '#9B0F23',
+    opacity: 0.4,
+  },
+  backButton: {
+    position: 'absolute',
+    top: Platform.OS === 'android' ? (StatusBar.currentHeight ? StatusBar.currentHeight + 10 : 25) : 20,
+    left: 20,
+    zIndex: 20,
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    backgroundColor: 'rgba(255, 255, 255, 0.15)',
+    borderRadius: 15,
+  },
+  backButtonText: {
+    color: '#FFFFFF',
+    fontSize: 13,
+    fontWeight: '700',
+  },
+  welcomeText: {
+    fontSize: 28,
+    fontWeight: '900',
+    color: '#FFFFFF',
+    textAlign: 'center',
+    lineHeight: 34,
+    zIndex: 10,
+    marginTop: 15,
+  },
+  balanceText: {
+    fontSize: 15,
+    color: '#FEE2E2',
+    textAlign: 'center',
+    marginTop: 6,
+    fontWeight: '600',
+    zIndex: 10,
+  },
+  card: {
+    flex: 1,
+    backgroundColor: '#FFFFFF',
+    borderTopLeftRadius: 36,
+    borderTopRightRadius: 36,
+    marginHorizontal: 0, // Align full width for clean scroll lists
+    marginTop: -40, // Overlaps the red header
+    paddingHorizontal: 20,
+    paddingTop: 24,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: -6 },
+    shadowOpacity: 0.05,
+    shadowRadius: 10,
+    elevation: 4,
+    overflow: 'hidden',
   },
   listContainer: {
-    padding: 16,
+    paddingBottom: 40,
   },
   movementItem: {
-    backgroundColor: '#fff',
-    borderRadius: 8,
-    padding: 16,
-    marginBottom: 12,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 4,
-    elevation: 2,
+    paddingVertical: 18,
+    borderBottomWidth: 1,
+    borderBottomColor: '#F3F4F6',
   },
   leftCol: {
+    flexDirection: 'row',
+    alignItems: 'center',
     flex: 1,
     paddingRight: 10,
   },
-  rightCol: {
-    alignItems: 'flex-end',
+  indicatorCircle: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 12,
+  },
+  debitoCircle: {
+    backgroundColor: '#FEE2E2', // Soft red
+  },
+  creditoCircle: {
+    backgroundColor: '#D1FAE5', // Soft green
+  },
+  indicatorArrow: {
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
+  debitoArrowColor: {
+    color: '#C8102E', // Davivienda red
+  },
+  creditoArrowColor: {
+    color: '#059669', // Safe emerald green
+  },
+  detailsCol: {
+    flex: 1,
   },
   description: {
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: '600',
-    color: '#333',
+    color: '#2D3748',
+    marginBottom: 4,
   },
   date: {
     fontSize: 12,
-    color: '#999',
-    marginTop: 4,
+    color: '#718096',
+    marginBottom: 6,
   },
   statusBadge: {
     alignSelf: 'flex-start',
-    backgroundColor: '#e6f7ff',
     paddingHorizontal: 8,
-    paddingVertical: 2,
-    borderRadius: 4,
-    marginTop: 6,
+    paddingVertical: 3,
+    borderRadius: 8,
+  },
+  statusSuccess: {
+    backgroundColor: '#E6FFFA',
+  },
+  statusPending: {
+    backgroundColor: '#FEFCBF',
   },
   statusText: {
-    fontSize: 11,
-    color: '#1890ff',
-    fontWeight: '500',
+    fontSize: 10,
+    fontWeight: '700',
+  },
+  statusTextSuccess: {
+    color: '#00A389',
+  },
+  statusTextPending: {
+    color: '#B7791F',
+  },
+  rightCol: {
+    alignItems: 'flex-end',
+    justifyContent: 'center',
   },
   value: {
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: '700',
   },
   debitoColor: {
-    color: '#e50014',
+    color: '#C8102E',
   },
   creditoColor: {
-    color: '#2e7d32',
+    color: '#059669',
   },
   typeText: {
-    fontSize: 11,
-    color: '#999',
+    fontSize: 10,
+    color: '#A0AEC0',
+    fontWeight: '600',
     marginTop: 4,
-    fontWeight: '500',
+    letterSpacing: 0.5,
   },
   emptyContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 20,
+    paddingTop: 60,
+  },
+  emptyIcon: {
+    fontSize: 48,
+    marginBottom: 16,
   },
   emptyText: {
-    fontSize: 16,
-    color: '#666',
+    fontSize: 15,
+    color: '#A0AEC0',
     textAlign: 'center',
+    fontWeight: '600',
   },
 });

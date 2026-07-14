@@ -218,6 +218,12 @@ class DaviPlataBridge(private val reactContext: ReactApplicationContext) : React
     }
 
     @ReactMethod
+    fun closeActivity() {
+        val activity = reactContext.currentActivity ?: return
+        activity.finish()
+    }
+
+    @ReactMethod
     fun sendLogout() {
         Log.d(TAG, "sendLogout called")
         val activity = reactContext.currentActivity ?: return
