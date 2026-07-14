@@ -26,14 +26,28 @@ export default function HomeBundle(props: HomeBundleProps) {
   });
 
   useEffect(() => {
+    // Fetch initial balance to sync immediately
+    const fetchBalance = async () => {
+      try {
+        const currentBalance = await NativeBridge.getBalance();
+        setUserData((prev) => ({
+          ...prev,
+          balance: currentBalance,
+        }));
+      } catch (e) {
+        console.error('Error fetching balance on HomeBundle mount:', e);
+      }
+    };
+    fetchBalance();
+
     const subscription = NativeBridge.onLoadHome((data: any) => {
       console.log('[HomeBundle] Evento LOAD_HOME recibido de Android:', data);
       if (data) {
-        setUserData({
-          name: data.name || userData.name,
-          phone: data.phone || userData.phone,
-          balance: data.balance !== undefined ? data.balance : userData.balance,
-        });
+        setUserData((prev) => ({
+          name: data.name || prev.name,
+          phone: data.phone || prev.phone,
+          balance: data.balance !== undefined ? data.balance : prev.balance,
+        }));
       }
     });
 
@@ -45,7 +59,7 @@ export default function HomeBundle(props: HomeBundleProps) {
       subscription.remove();
       expirationSubscription.remove();
     };
-  }, [userData]);
+  }, []);
 
   // Robust Colombian Peso formatting: $1.450.000,00
   const formatCurrency = (value: number) => {

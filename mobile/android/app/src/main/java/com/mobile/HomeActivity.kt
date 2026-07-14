@@ -41,6 +41,12 @@ class HomeActivity : ReactActivity() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        Log.d(TAG, "onResume called - refreshing balance in background")
+        refreshBalanceInBackground()
+    }
+
     private fun refreshBalanceInBackground() {
         Thread {
             try {
