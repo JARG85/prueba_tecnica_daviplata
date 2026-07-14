@@ -92,8 +92,8 @@ export default function LoginBundle() {
             <View style={styles.gradientOverlay2} />
             <View style={styles.gradientOverlay3} />
 
-            {/* Circular Logo Container */}
-            <View style={styles.logoCircleContainer}>
+            {/* Rounded Logo Container */}
+            <View style={styles.logoRoundedContainer}>
               <Image
                 source={require('../assets/images/logo_davivienda.png')}
                 style={styles.headerLogoImage}
@@ -237,10 +237,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#9B0F23',
     opacity: 0.45,
   },
-  logoCircleContainer: {
+  logoRoundedContainer: {
     width: 96,
     height: 96,
-    borderRadius: 48,
+    borderRadius: 22,
     backgroundColor: '#FFFFFF',
     borderWidth: 2,
     borderColor: '#FFFFFF',
