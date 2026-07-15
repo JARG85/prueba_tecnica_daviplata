@@ -72,27 +72,10 @@ test:
 # the values provided in this file.
 
 production:
-  primary: &production_primary
-    <<: *default
-    url: <%= ENV["DATABASE_URL"] %>
-    pool: 5
-  # primary: &production_primary
-  #   <<: *default
-  #   url: <%= ENV["DATABASE_URL"] || ENV["DATABASE_PRIVATE_URL"] %>
-  #   host: <%= ENV["PGHOST"] || ENV["POSTGRES_HOST"] %>
-  #   port: <%= ENV["PGPORT"] || ENV["POSTGRES_PORT"] || 5432 %>
-  #   database: <%= ENV["PGDATABASE"] || ENV["POSTGRES_DB"] || ENV["POSTGRES_DATABASE"] %>
-  #   username: <%= ENV["PGUSER"] || ENV["POSTGRES_USER"] %>
-  #   password: <%= ENV["PGPASSWORD"] || ENV["POSTGRES_PASSWORD"] %>
-  # Solid Cache/Queue/Cable (Rails 8 defaults, enabled in config/environments/production.rb)
-  # need their own named connections. There's a single Postgres instance on Railway, so they
-  # share it with `primary` and are kept apart via their own migration paths/tables.
-  # cache:
-  #   <<: *production_primary
-  #   migrations_paths: db/cache_migrate
-  # queue:
-  #   <<: *production_primary
-  #   migrations_paths: db/queue_migrate
-  # cable:
-  #   <<: *production_primary
-  #   migrations_paths: db/cable_migrate
+  <<: *default
+  url: <%= ENV['DATABASE_URL'] %>
+  adapter: postgresql
+  encoding: unicode
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+
+
