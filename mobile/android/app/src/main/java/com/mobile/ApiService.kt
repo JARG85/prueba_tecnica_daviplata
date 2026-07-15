@@ -7,7 +7,7 @@ import java.net.URL
 
 object ApiService {
 
-    private const val BASE_URL = "https://pruebatecnicadaviplata-production.up.railway.app/api/v1"
+    private const val BASE_URL = "https://prueba-tecnica-daviplata.onrender.com/api/v1"
     private const val TIMEOUT_MS = 10000
 
     fun login(phone: String, password: String): String {
