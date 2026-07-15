@@ -5,4 +5,9 @@ if [ "${@: -2:1}" == "./bin/rails" ] && [ "${@: -1:1}" == "server" ]; then
   ./bin/rails db:prepare
 fi
 
+# Thruster listens on HTTP_PORT (default 80), not on the generic PORT that
+# platforms like Railway inject dynamically. Propagate it so Thruster binds
+# to the port the platform actually routes traffic to.
+export HTTP_PORT="${PORT:-80}"
+
 exec "${@}"
